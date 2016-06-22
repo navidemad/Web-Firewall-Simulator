@@ -10,7 +10,24 @@
 </head>
 <body ng-controller="MainController" style="margin: 0px;">
 
-    <img id="imagelogo" src="http://www.google.com/images/srpr/logo11w.png">
+	<h1>Firewall simulator</h1>
+
+	<div class="rules-container">
+		<li ng-repeat="rule in rules" style="border:1px solid black;">
+			<h3>{{ rule.ruleName }}</h3>
+			<h4>protertie1:{{ rule.propertie1 }}</h4>
+			<h4>protertie2:{{ rule.propertie2 }}</h4>
+			<h4>rawRule:{{ rule }}</h4>
+		</li>
+
+		<div class="form-group">
+			<h3>Add a rule</h3>
+			Rule Name : <input class="form-control" type="text" ng-model="tmpRule.ruleName"/>
+			Propertie 1 : <input class="form-control" type="text" ng-model="tmpRule.propertie1"/>
+			Propertie 2 : <input class="form-control" type="text" ng-model="tmpRule.propertie2"/>
+			<input class="btn btn-default" type="submit" ng-click="addNewRule()"/>
+		</div>
+	</div>
 
 </body>
 </html>
