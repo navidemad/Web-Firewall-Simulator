@@ -11,7 +11,8 @@
   */
   module.controller('MainController', function($scope, $uibModal, $log) {
 
-    $scope.rules = [];
+    $scope.rules = (localStorage.getItem('rules') !== null) ? JSON.parse(localStorage.getItem('rules')) : [];
+  	localStorage.setItem('rules', JSON.stringify($scope.rules));
 
     $scope.openRuleEditor = function (selectedRule) {
       $uibModal.open({
@@ -26,12 +27,16 @@
         }
       }).result.then(function (rule) {
         $scope.rules.push(rule);
+        localStorage.setItem('rules', JSON.stringify($scope.rules));
       });
     };
 
     $scope.deleteRule = function(selectedRule) {
       var idx = $scope.rules.indexOf(selectedRule);
-      if (idx != -1) $scope.rules.splice(i, 1);
+      if (idx != -1) {
+        $scope.rules.splice(idx, 1);
+        localStorage.setItem('rules', JSON.stringify($scope.rules));
+      }
     };
 
   });

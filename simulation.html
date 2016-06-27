@@ -1,0 +1,21 @@
+<div id="runner">
+  <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <thead>
+      <tr>
+        <th>State</th>
+        <th>Rule</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="rule in rules" >
+        <td><span class="label label-success">Success</span></td>
+        <td>{{ rule }}</td>
+      </li>
+    </tbody>
+  </table>
+  <div class="alert alert-danger" role="alert">
+    <strong>Rule #12 failed</strong><br>
+    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+  </div>
+  <button type="button" class="btn btn-block btn-success"><i class="fa fa-play"></i> Run</button>
+</div>

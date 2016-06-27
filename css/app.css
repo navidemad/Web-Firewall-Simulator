@@ -47,7 +47,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .content {
   border: 1px solid #d4d4d4;
   padding: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .content .table {
@@ -79,4 +79,18 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   background: -webkit-linear-gradient(top, #efefef 0%,#d8d8d8 67%,#b2b2b2 100%);
   background: linear-gradient(to bottom, #efefef 0%,#d8d8d8 67%,#b2b2b2 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efefef', endColorstr='#b2b2b2',GradientType=0 );
+}
+
+#rules-container {
+
+}
+
+#packets-container {
+
+}
+
+#runner {
+  border: 1px solid #d4d4d4;
+  padding: 10px;
+  margin-top: 15px;
 }
