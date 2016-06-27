@@ -11,6 +11,8 @@
   */
   module.controller('MainController', function($scope, $uibModal, $log) {
 
+    $scope.value= 750;
+
     $scope.rules = (localStorage.getItem('rules') !== null) ? JSON.parse(localStorage.getItem('rules')) : [];
   	localStorage.setItem('rules', JSON.stringify($scope.rules));
 
