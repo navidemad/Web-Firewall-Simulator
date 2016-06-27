@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/ui-bootstrap-1.3.3-csp.css">
   <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/font-awesome.min.css">
   <script src="js/angular.min.js"></script>
   <script src="js/jquery.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
@@ -25,43 +26,28 @@
           <img src="img/3-musketeers-logo.png" alt="Three Musketeers" />
         </div>
       </div>
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="content">
-            <div class="rules-container">
-              <div class="btn-list">
-                <span class="text-c2a" ng-click="openRuleEditor()">Add a new rule</span>
-              </div>
-              <table class="table table-striped table-bordered" cellspacing="0" width="100%">
-                <thead>
-                  <tr>
-                    <th>Rule name</th>
-                    <th>Propertie 1</th>
-                    <th>Propertie 1</th>
-                    <th>Raw</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr ng-repeat="rule in rules" >
-              			<td>{{ rule.ruleName }}</td>
-              			<td>{{ rule.propertie1 }}</td>
-              			<td>{{ rule.propertie2 }}</td>
-              			<td>{{ rule }}</td>
-                    <td>
-                      <span class="text-c2a" ng-click="openRuleEditor(rule)">edit</span>
-                      <span class="text-c2a" ng-click="deleteRule(rule)">delete</span>
-                    </td>
-              		</li>
-                </tbody>
-              </table>
-          	</div>
-          </div>
-        </div>
-      </div>
+      <uib-tabset active="active">
+          <uib-tab index="0" heading="Rules">
+            <div ng-include src="'rules.html'"></div>
+          </uib-tab>
+
+          <uib-tab>
+            <uib-tab-heading>
+              Package
+            </uib-tab-heading>
+            <div ng-include src="'package.html'"></div>
+          </uib-tab>
+
+          <uib-tab>
+            <uib-tab-heading>
+              <i class="fa fa-play"></i> Simulation
+            </uib-tab-heading>
+            <div ng-include src="'simulation.html'"></div>
+          </uib-tab>
+        </uib-tabset>
+
     </div>
   </div>
-
   <script type="text/ng-template" id="modalRuleEditorContent.html">
       <div class="modal-header">
           <h3 class="modal-title">Add rule</h3>
