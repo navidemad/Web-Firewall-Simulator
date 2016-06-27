@@ -1,27 +1,53 @@
-var module = angular.module('myApp', []);
+(function () {
 
-module.controller('MainController', function($scope) {
+  'use strict';
 
-  var generateEmptyRule = function () {
-    return { // Used for adding rules feature
-      ruleName: '',
-      propertie1: 0,
-      propertie2: ''
+  // Including ui.bootstrap to handle UI
+  var module = angular.module('myApp', ['ui.bootstrap']);
+
+  /*
+  ** MainController
+  ** Listing rules and actions to add/edit/delete
+  */
+  module.controller('MainController', function($scope, $uibModal, $log) {
+
+    $scope.rules = [];
+
+    $scope.openRuleEditor = function (selectedRule) {
+      $uibModal.open({
+        animation: true,
+        templateUrl: 'modalRuleEditorContent.html',
+        controller: 'RuleController',
+        size: 'lg',
+        resolve: {
+          ruleSelected: function () {
+            return selectedRule;
+          }
+        }
+      }).result.then(function (rule) {
+        $scope.rules.push(rule);
+      });
     };
-  }
 
-  $scope.rules = [{
-    ruleName: 'Default',
-    propertie1: 0x342,
-    propertie2: 'all'
-  }];
+    $scope.deleteRule = function(selectedRule) {
+      var idx = $scope.rules.indexOf(selectedRule);
+      if (idx != -1) $scope.rules.splice(i, 1);
+    };
 
-  $scope.tmpRule = generateEmptyRule(); // Used for adding rules feature
+  });
 
-  $scope.addNewRule = function () {
-    $scope.rules.push($scope.tmpRule);
-    $scope.tmpRule = generateEmptyRule()
-  }
+  /*
+  ** RuleController
+  ** Popup saving rule
+  */
+  module.controller('RuleController', function ($scope, $uibModalInstance, $log, ruleSelected) {
+    if (ruleSelected !== void(0)) {
+      $scope.ruleSelected = ruleSelected;
+    } else {
+      $scope.ruleSelected = { name: '', property1: 0, property2: '' };
+    }
+    $scope.save     = function () { $uibModalInstance.close($scope.ruleSelected); };
+    $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); };
+  });
 
-  console.log('controller');
-});
+}());
