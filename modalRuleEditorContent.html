@@ -3,67 +3,67 @@
 </div>
 <div class="modal-body">
   <form class="form-horizontal">
-    
+
     <div class="form-group">
       <label for="inputRuleName" class="control-label col-xs-2">Rule Name</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputRuleName" ng-model="ruleSelected.ruleName">
+        <input type="text" class="form-control" id="inputRuleName" ng-model="ruleSelected.ruleName" required>
       </div>
     </div>
 
     <div class="form-group">
       <label for="inputProperty1" class="control-label col-xs-2">Source Zone</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty1" placeholder="Zone Name" ng-model="ruleSelected.sourceZone">
+        <input type="text" class="form-control" id="inputProperty1" placeholder="Zone Name" ng-model="ruleSelected.sourceZone" required>
       </div>
     </div>
-    
+
     <div class="form-group">
       <label for="inputProperty2" class="control-label col-xs-2">Source Address</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="0.0.0.0/0" ng-model="ruleSelected.sourceAddress">
+        <input type="text" class="form-control" id="inputProperty2" placeholder="0.0.0.0/0" ng-model="ruleSelected.sourceAddress" pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}/([0-9]{1,3})$" required>
       </div>
     </div>
-    
+
     <div class="form-group">
       <label for="inputProperty2" class="control-label col-xs-2">User</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="User name" ng-model="ruleSelected.user">
+        <input type="text" class="form-control" id="inputProperty2" placeholder="User name" ng-model="ruleSelected.user" required>
       </div>
     </div>
-    
+
     <div class="form-group">
       <label for="inputProperty2" class="control-label col-xs-2">Destination Zone</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="User name" ng-model="ruleSelected.destinationZone">
+        <input type="text" class="form-control" id="inputProperty2" placeholder="User name" ng-model="ruleSelected.destinationZone" required>
       </div>
     </div>
-    
+
     <div class="form-group">
       <label for="inputProperty2" class="control-label col-xs-2">Destination Address</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="0.0.0.0/0" ng-model="ruleSelected.destinationAddress">
+        <input type="text" class="form-control" id="inputProperty2" placeholder="0.0.0.0/0" ng-model="ruleSelected.destinationAddress" required>
       </div>
     </div>
-    
+
     <div class="form-group">
       <label for="inputProperty2" class="control-label col-xs-2">Destination Port</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="22" ng-model="ruleSelected.destinationPort">
+        <input type="text" class="form-control" id="inputProperty2" placeholder="22" ng-model="ruleSelected.destinationPort" required>
       </div>
     </div>
-    
+
     <div class="form-group">
       <label for="inputProperty2" class="control-label col-xs-2">Application</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="SSH" ng-model="ruleSelected.application">
+        <input type="text" class="form-control" id="inputProperty2" placeholder="SSH" ng-model="ruleSelected.application" required>
       </div>
     </div>
-    
+
     <div class="form-group">
       <label for="inputProperty2" class="control-label col-xs-2">Action</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="Allow or Deny" ng-model="ruleSelected.action">
+        <input type="text" class="form-control" id="inputProperty2" placeholder="Allow or Deny" ng-model="ruleSelected.action" required>
       </div>
     </div>
 

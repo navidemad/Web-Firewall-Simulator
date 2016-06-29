@@ -2,6 +2,12 @@
 
   'use strict';
 
+  $(function(){
+
+    // onLoad dom doc
+
+  });
+
   // Including ui.bootstrap to handle UI
   var app = angular.module('myApp', ['ui.bootstrap']);
 
@@ -27,9 +33,9 @@
     		}
 
     		// If there is a previous element in sections
-    		if (array[index-1]) {
+    		if (array[index - 1]) {
     			// Swap elements
-    			array.splice(index - 1, 2, array[index], array[index-1]);
+    			array.splice(index - 1, 2, array[index], array[index - 1]);
     		} else {
     			// Do nothing
     			return 0;
