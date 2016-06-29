@@ -39,7 +39,7 @@
     $scope.openRuleEditor = function (selectedRule) {
       $uibModal.open({
         animation: true,
-        templateUrl: 'modalRuleEditorContent.html',
+        templateUrl: '/modalRuleEditorContent.html',
         controller: 'RuleController',
         size: 'lg',
         resolve: {
@@ -67,11 +67,22 @@
   ** RuleController
   ** Popup saving rule
   */
+
   module.controller('RuleController', function ($scope, $uibModalInstance, $log, ruleSelected) {
     if (ruleSelected !== void(0)) {
       $scope.ruleSelected = ruleSelected;
     } else {
-      $scope.ruleSelected = { name: '', property1: 0, property2: '' };
+      $scope.ruleSelected = { 
+        ruleName: '', 
+        sourceZone: '', 
+        sourceAddress: '', 
+        user: '', 
+        destinationZone: '', 
+        destinationAddress: '', 
+        destinationPort: '', 
+        application: '', 
+        action: '' 
+      };
     }
     $scope.save   = function () { $uibModalInstance.close($scope.ruleSelected); };
     $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); };

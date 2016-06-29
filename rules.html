@@ -6,18 +6,27 @@
     <thead>
       <tr>
         <th>Rule name</th>
-        <th>Propertie 1</th>
-        <th>Propertie 1</th>
-        <th>Raw</th>
-        <th>Actions</th>
+        <th>Source zone</th>
+        <th>Source address</th>
+        <th>User</th>
+        <th>Destination zone</th>
+        <th>Destination address</th>
+        <th>Destination port</th>
+        <th>Application</th>
+        <th>Action</th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="rule in rules" >
         <td>{{ rule.ruleName }}</td>
-        <td>{{ rule.propertie1 }}</td>
-        <td>{{ rule.propertie2 }}</td>
-        <td>{{ rule }}</td>
+        <td>{{ rule.sourceZone }}</td>
+        <td>{{ rule.sourceAddress }}</td>
+        <td>{{ rule.user }}</td>
+        <td>{{ rule.destinationZone }}</td>
+        <td>{{ rule.destinationAddress }}</td>
+        <td>{{ rule.destinationPort }}</td>
+        <td>{{ rule.application }}</td>
+        <td>{{ rule.action }}</td>
         <td>
           <button type="button" class="btn btn-xs btn-info"><i class="fa fa-chevron-circle-up"></i></button>
           <button type="button" class="btn btn-xs btn-info"><i class="fa fa-chevron-circle-down"></i></button>
