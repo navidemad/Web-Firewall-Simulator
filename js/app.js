@@ -126,10 +126,12 @@
       };
 
       $scope.runSimulations = function () {
+        $scope.nbRulesTested = 0;
         angular.forEach($scope.packets, function(packet, _) {
-          $log.info('packet: ' + packet);
+          angular.forEach($scope.rules, function(packet, _) {
+            $scope.nbRulesTested += 1;
+          });
         });
-        $scope.nbRulesTested = 1;
       };
 
     /*
@@ -150,16 +152,15 @@
     }
     // New mode
     else {
-
-      $scope.ruleSelected = { 
-        ruleName: '', 
-        sourceZone: '', 
-        sourceAddress: '', 
-        user: '', 
-        destinationZone: '', 
-        destinationAddress: '', 
-        destinationPort: '', 
-        application: '', 
+      $scope.ruleSelected = {
+        ruleName: '',
+        sourceZone: '',
+        sourceAddress: '',
+        user: '',
+        destinationZone: '',
+        destinationAddress: '',
+        destinationPort: '',
+        application: '',
         action: ''
       };
     }

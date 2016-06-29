@@ -63,16 +63,19 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 .tab-content .table {
   margin: 0;
+  table-layout: fixed;
+  width: auto;
+}
+
+.tab-content .table td,
+.tab-content .table th {
+  padding: 7px 12px;
+  font-size: 11px;
+  vertical-align: middle;
 }
 
 .tab-content .table th {
   text-transform: uppercase;
-}
-
-.tab-content .table td {
-  padding: 7px 15px;
-  font-size: 11px;
-  vertical-align: middle;
 }
 
 .tab-content .table tr {
