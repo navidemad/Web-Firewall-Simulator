@@ -28,8 +28,8 @@
         <td>{{ rule.application }}</td>
         <td>{{ rule.action }}</td>
         <td>
-          <button type="button" class="btn btn-xs btn-info"><i class="fa fa-chevron-circle-up"></i></button>
-          <button type="button" class="btn btn-xs btn-info"><i class="fa fa-chevron-circle-down"></i></button>
+          <button type="button" class="btn btn-xs btn-info" ng-click="moveElementUp(rule)"><i class="fa fa-chevron-circle-up"></i></button>
+          <button type="button" class="btn btn-xs btn-info" ng-click="moveElementDown(rule)"><i class="fa fa-chevron-circle-down"></i></button>
           <button type="button" class="btn btn-xs btn-warning" ng-click="openRuleEditor(rule)"><i class="fa fa-cog"></i></button>
           <button type="button" class="btn btn-xs btn-danger" ng-click="deleteRule(rule)"><i class="fa fa-trash"></i></button>
         </td>
