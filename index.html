@@ -17,38 +17,25 @@
 <body ng-controller="MainController" style="margin: 0px;">
 
   <div id="app">
-    <div id="header" class="gray-gradiant">
-      <span>Web Firewall Simulator - Summer 2016 Epitech IITS Practicum</span></span>
-    </div>
-    <div class="container-fluid">
+    <div class="container">
+      <div id="header" class="gray-gradiant">
+        <span>Web Firewall Simulator - Summer 2016 Epitech IITS Practicum</span></span>
+      </div>
       <div class="row banner">
         <div class="col-xs-12 logo">
           <img src="img/3-musketeers-logo.png" alt="Three Musketeers" />
         </div>
       </div>
-      <div class="row">
+      <div class="row app-content">
         <div class="col-xs-12">
-          <div class="content">
-            <uib-tabset active="active">
-                <uib-tab index="0" heading="Rules">
-                  <div ng-include src="'rules.html'"></div>
-                </uib-tab>
-
-                <uib-tab>
-                  <uib-tab-heading>
-                    Packets
-                  </uib-tab-heading>
-                  <div ng-include src="'packets.html'"></div>
-                </uib-tab>
-
-                <uib-tab>
-                  <uib-tab-heading>
-                    Simulation
-                  </uib-tab-heading>
-                  <div ng-include src="'simulation.html'"></div>
-                </uib-tab>
-              </uib-tabset>
-            </div>
+          <uib-tabset>
+              <uib-tab index="0" heading="Rules">
+                <div ng-include src="'rules.html'"></div>
+              </uib-tab>
+              <uib-tab heading="Tester">
+                <div ng-include src="'tester.html'"></div>
+              </uib-tab>
+            </uib-tabset>
           </div>
         </div>
       </div>

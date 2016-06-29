@@ -3,8 +3,9 @@ body {
   font-size: 12px;
   font-weight: 300;
   line-height: 1.45;
-  background: black;
   color: #101010;
+  background-image: url('../img/background.jpg');
+  background-size: cover;
 }
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
@@ -12,13 +13,18 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 #app {
-  width: auto;
-  max-width: 800px;
-  margin: 10px auto;
+  margin-top: 40px;
+}
+
+#app .container {
   border-radius: 7px;
   background: #f0f0f0;
   box-shadow: 0 3px 4px rgba(0,0,0,0.2);
   overflow: hidden;
+}
+
+#app > .container-fluid {
+  padding: 0;
 }
 
 #header {
@@ -27,10 +33,15 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   padding: 5px 8px;
   font-size: 11px;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  margin: 0 -15px;
 }
 
-.banner {
-  padding: 15px;
+#app-content {
+  margin: 15px;
+}
+
+.app-content {
+  padding: 15px 0;
 }
 
 .banner .logo {
@@ -44,33 +55,32 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   width: auto;
 }
 
-.content {
+.tab-content {
   border: 1px solid #d4d4d4;
-  padding: 10px;
-  margin-bottom: 10px;
+  padding: 15px;
+  background: #fdfdfd;
 }
 
-.content .table {
+.tab-content .table {
   margin: 0;
 }
 
-.content .table td {
-  padding: 3px;
-  font-size: 11px;
+.tab-content .table th {
+  text-transform: uppercase;
 }
 
-.content .table tr {
+.tab-content .table td {
+  padding: 7px 15px;
+  font-size: 11px;
+  vertical-align: middle;
+}
+
+.tab-content .table tr {
   border: none !important;
 }
 
 .btn-list {
   margin-bottom: 5px;
-}
-
-.text-c2a {
-  text-decoration: underline;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
-  cursor: pointer;
 }
 
 .gray-gradiant {
@@ -81,6 +91,22 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efefef', endColorstr='#b2b2b2',GradientType=0 );
 }
 
+.nav-tabs {
+  margin-bottom: -1px;
+}
+.nav-tabs>li>a {
+  font-weight: 300;
+  background: #fcfcfc;
+  color: #999;
+  padding: 5px 15px;
+  border-bottom: 1px solid #d4d4d4;
+}
+.nav-tabs>li>a:focus,.nav-tabs>li>a:hover {
+  background: #fcfcfc;
+  color: #999;
+  border-color: transparent transparent #d4d4d4 transparent;
+}
+
 #rules-container {
 
 }
@@ -89,8 +115,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 }
 
-#runner {
-  border: 1px solid #d4d4d4;
-  padding: 10px;
-  margin-top: 15px;
+#simulation-container {
+
 }

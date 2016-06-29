@@ -11,10 +11,30 @@
   */
   module.controller('MainController', function($scope, $uibModal, $log) {
 
-    $scope.value= 750;
+    $scope.nbRulesTested = 0;
+    $scope.nbRulesFailed = 0;
+    $scope.nbRulesSucceed = 0;
 
     $scope.rules = (localStorage.getItem('rules') !== null) ? JSON.parse(localStorage.getItem('rules')) : [];
-  	localStorage.setItem('rules', JSON.stringify($scope.rules));
+    $scope.packets = (localStorage.getItem('packets') !== null) ? JSON.parse(localStorage.getItem('packets')) : [];
+
+    localStorage.setItem('rules', JSON.stringify($scope.rules));
+    localStorage.setItem('packets', JSON.stringify($scope.packets));
+
+    $scope.nbRulesTotal = function () {
+      return $scope.rules.length;
+    };
+
+    $scope.nbPacketsTotal = function () {
+      return $scope.packets.length;
+    };
+
+    $scope.runSimulations = function () {
+      angular.forEach($scope.packets, function(packet, _) {
+        $log.info('packet: ' + packet);
+      });
+      $scope.nbRulesTested = 1;
+    };
 
     $scope.openRuleEditor = function (selectedRule) {
       $uibModal.open({
@@ -53,7 +73,7 @@
     } else {
       $scope.ruleSelected = { name: '', property1: 0, property2: '' };
     }
-    $scope.save     = function () { $uibModalInstance.close($scope.ruleSelected); };
+    $scope.save   = function () { $uibModalInstance.close($scope.ruleSelected); };
     $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); };
   });
 

@@ -1,0 +1,30 @@
+<!-- source, destination, ip headers, transport layer headers, application signatures -->
+<!-- FTP, SSH, Telnet, SMTP, Finger, HTTP, POP3, IDENT -->
+<div id="simulation-container">
+  <button type="button" class="btn btn-block btn-success" ng-click="runSimulations()"><i class="fa fa-play"></i> Run</button>
+  <uib-progressbar style="margin-top: 10px;" max="'{{nbRulesTotal()}}'" value="value" animate="true">
+    <span style="color:white; white-space:nowrap;">{{nbRulesTested}} / {{nbRulesTotal()}}</span>
+  </uib-progressbar>
+  <fieldset>
+    <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+      <thead>
+        <tr>
+          <th>State</th>
+          <th>Rule</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="rule in rules" >
+          <td><span class="label label-success">Success</span></td>
+          <td>{{ rule }}</td>
+        </li>
+      </tbody>
+    </table>
+  </fieldset>
+  <div class="alert alert-danger" role="alert">
+    <strong>Rule #12 failed</strong><br>
+    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+  </div>
+</div>
+
+To validate and test real firewall rule sets and configurations (hence the requirement to be able to upload a PAN configuration)

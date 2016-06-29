@@ -1,6 +1,6 @@
 <div class="rules-container">
   <div class="btn-list">
-    <span class="text-c2a" ng-click="openRuleEditor()">Add a new rule</span>
+    <button type="button" class="btn btn-xs btn-info" ng-click="openRuleEditor()"><i class="fa fa-plus-square"></i> new rule</button>
   </div>
   <table class="table table-striped table-bordered" cellspacing="0" width="100%">
     <thead>
@@ -19,8 +19,10 @@
         <td>{{ rule.propertie2 }}</td>
         <td>{{ rule }}</td>
         <td>
-          <span class="text-c2a" ng-click="openRuleEditor(rule)">edit</span>
-          <span class="text-c2a" ng-click="deleteRule(rule)">delete</span>
+          <button type="button" class="btn btn-xs btn-info"><i class="fa fa-chevron-circle-up"></i></button>
+          <button type="button" class="btn btn-xs btn-info"><i class="fa fa-chevron-circle-down"></i></button>
+          <button type="button" class="btn btn-xs btn-warning" ng-click="openRuleEditor(rule)"><i class="fa fa-cog"></i></button>
+          <button type="button" class="btn btn-xs btn-danger" ng-click="deleteRule(rule)"><i class="fa fa-trash"></i></button>
         </td>
       </li>
     </tbody>
