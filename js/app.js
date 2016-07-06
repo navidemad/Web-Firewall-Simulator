@@ -163,22 +163,59 @@
         // TODO: try every test
         return true;
       }
+      function* generatorMethodSimulation(){
 
-      $scope.runSimulations = function () {
-        $scope.nbRulesTested = 0;
-        angular.forEach($scope.packets, function(packet, _) {
-          
+        for (var i = $scope.packets.length - 1; i >= 0; i--) {
+          var packet = $scope.packets[i];
+          packet.failRules = [];
+        }
+        yield* [false];
+
+        for (var i = 0; i < $scope.packets.length; i++) {
+          var packet = $scope.packets[i];
+
           packet.failRules = [];
 
-          angular.forEach($scope.rules, function(rule, _) {
+           for (var j = 0; j < $scope.rules.length; j++) {
+            var rule = $scope.rules[j];
 
             if (!passThroughFirewallRule(packet, rule)) {
               packet.failRules.push(rule);
             }
+            $scope.$apply();
 
-            $scope.nbRulesTested += 1;
-          });
-        });
+            yield* [false];
+            
+          }
+        }
+
+      };
+
+      var tm = null;
+      var gen = null; 
+      
+      function simulationLoop() {
+        tm = setTimeout(function() { 
+          if (gen == null) {
+            gen = generatorMethodSimulation();
+          }
+          if (gen.next().done) {
+            clearTimeout(tm);
+            tm = null;
+            gen = null;
+          } else{
+            simulationLoop();
+          }
+        }, 500);
+      };
+
+
+      $scope.runSimulations = function () {
+        $scope.nbRulesTested = 0;
+        if (tm == null) {
+          console.log("runSimulations");
+          simulationLoop();
+        }
       };
 
     /*
