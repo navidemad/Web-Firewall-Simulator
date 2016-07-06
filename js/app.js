@@ -78,6 +78,12 @@
       $scope.rules = (localStorage.getItem('rules') !== null) ? JSON.parse(localStorage.getItem('rules')) : [];
       localStorage.setItem('rules', JSON.stringify($scope.rules));
 
+      /*
+      ** Packet data
+      */
+      $scope.packets = (localStorage.getItem('packets') !== null) ? JSON.parse(localStorage.getItem('packets')) : [];
+      localStorage.setItem('packets', JSON.stringify($scope.packets));
+
       // Counters
       $scope.nbRulesTested = 0;
       $scope.nbRulesFailed = 0;
@@ -85,6 +91,25 @@
 
       $scope.nbRulesTotal = function () {
         return $scope.rules.length;
+      };
+
+      // new/edit/delete buttons
+      $scope.openPacketEditor = function (selectedPacket) {
+
+        $uibModal.open({
+          animation: true,
+          templateUrl: '/modalPacketEditorContent.html',
+          controller: 'PacketController',
+          size: 'lg',
+          resolve: {
+            packetSelected: function () {
+              return selectedPacket;
+            }
+          }
+        }).result.then(function (packet) {
+          $scope.packets.push(packet);
+          localStorage.setItem('packets', JSON.stringify($scope.packets));
+        });
       };
 
       // new/edit/delete buttons
@@ -131,10 +156,26 @@
         return $scope.packets.length;
       };
 
+      var passThroughFirewallRule = function (packet, rule) {
+        if (rule.user != "any" && rule.user != packet.user) {
+          return false;
+        }
+        // TODO: try every test
+        return true;
+      }
+
       $scope.runSimulations = function () {
         $scope.nbRulesTested = 0;
         angular.forEach($scope.packets, function(packet, _) {
-          angular.forEach($scope.rules, function(packet, _) {
+          
+          packet.failRules = [];
+
+          angular.forEach($scope.rules, function(rule, _) {
+
+            if (!passThroughFirewallRule(packet, rule)) {
+              packet.failRules.push(rule);
+            }
+
             $scope.nbRulesTested += 1;
           });
         });
@@ -171,6 +212,32 @@
       };
     }
     $scope.save   = function () { $uibModalInstance.close($scope.ruleSelected); };
+    $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); };
+  });
+
+  /*
+  ** PacketController
+  ** Popup saving rule
+  */
+  app.controller('PacketController', function ($scope, $uibModalInstance, $log, packetSelected) {
+    // Edit mode
+    if (packetSelected !== void(0)) {
+      $scope.packetSelected = packetSelected;
+    }
+    // New mode
+    else {
+      $scope.packetSelected = {
+        sourceZone: '',
+        sourceAddress: '',
+        user: '',
+        destinationZone: '',
+        destinationAddress: '',
+        destinationPort: '',
+        application: '',
+        action: ''
+      };
+    }
+    $scope.save   = function () { $uibModalInstance.close($scope.packetSelected); };
     $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); };
   });
 
