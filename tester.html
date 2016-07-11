@@ -25,6 +25,8 @@
                   <td>FailedRule = {{ rule }}</td>
               </tr>
             </table>
+            <button type="button" class="btn btn-xs btn-warning" ng-click="openPacketEditor(packet)"><i class="fa fa-cog"></i></button>
+            <button type="button" class="btn btn-xs btn-danger" ng-click="deletePacket(packet)"><i class="fa fa-trash"></i></button>
           </td>
         </tr>
       </tbody>

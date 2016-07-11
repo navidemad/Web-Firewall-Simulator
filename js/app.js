@@ -141,6 +141,10 @@
         ArrayService.moveElementDown($scope.rules, selectedRule);
         localStorage.setItem('rules', JSON.stringify($scope.rules));
       };
+      $scope.deletePacket = function(selectedPacket) {
+        ArrayService.deleteElement($scope.packets, selectedPacket);
+        localStorage.setItem('packets', JSON.stringify($scope.packets));
+      };
 
     /*
     ** Tab: Tester
@@ -157,6 +161,37 @@
       };
 
       var passThroughFirewallRule = function (packet, rule) {
+        // PACKET
+        var packetSRCAddr = ipaddr.parse(packet.sourceAddress.split("/")[0]).octets;
+        var packetSRCAddrCIDR = ipaddr.parseCIDR(packet.sourceAddress)[1];
+        var packetDestAddr = ipaddr.parse(packet.destinationAddress.split("/")[0]).octets;
+        var packetDestAddrCIDR = ipaddr.parseCIDR(packet.destinationAddress)[1];
+
+        // RULE
+        var ruleSRCAddr = ipaddr.parse(rule.sourceAddress.split("/")[0]).octets;
+        var ruleSRCAddrCIDR = ipaddr.parseCIDR(rule.sourceAddress)[1];
+        var ruleDestAddr = ipaddr.parse(rule.destinationAddress.split("/")[0]).octets;
+        var ruleDestAddrCIDR = ipaddr.parseCIDR(rule.destinationAddress)[1];
+
+        console.log("SRC PACKET addr = " + packetSRCAddr);
+        console.log("SRC PACKET addrCIDR = " + packetSRCAddrCIDR);
+        console.log("DEST PACKET addr = " + packetDestAddr);
+        console.log("DEST PACKET addrCIDR = " + packetDestAddrCIDR);
+
+        console.log("SRC RULE addr = " + ruleSRCAddr);
+        console.log("SRC RULE addrCIDR = " + ruleSRCAddrCIDR);
+        console.log("DEST RULE addr = " + ruleDestAddr);
+        console.log("DEST RULE addrCIDR = " + ruleDestAddrCIDR);
+
+        if (packetDestAddrCIDR == 8){
+
+        }
+        else if (packetDestAddrCIDR == 16){
+
+        }
+        else if (packetDestAddrCIDR == 24){
+
+        }
         if (rule.user != "any" && rule.user != packet.user) {
           return false;
         }
@@ -185,17 +220,17 @@
             $scope.$apply();
 
             yield* [false];
-            
+
           }
         }
 
       };
 
       var tm = null;
-      var gen = null; 
-      
+      var gen = null;
+
       function simulationLoop() {
-        tm = setTimeout(function() { 
+        tm = setTimeout(function() {
           if (gen == null) {
             gen = generatorMethodSimulation();
           }
