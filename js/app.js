@@ -162,35 +162,28 @@
 
       var passThroughFirewallRule = function (packet, rule) {
         // PACKET
-        var packetSRCAddr = ipaddr.parse(packet.sourceAddress.split("/")[0]).octets;
-        var packetSRCAddrCIDR = ipaddr.parseCIDR(packet.sourceAddress)[1];
-        var packetDestAddr = ipaddr.parse(packet.destinationAddress.split("/")[0]).octets;
-        var packetDestAddrCIDR = ipaddr.parseCIDR(packet.destinationAddress)[1];
+        var packetSRCAddr = ipaddr.parse(packet.sourceAddress);
+        var packetDestAddr = ipaddr.parse(packet.destinationAddress);
 
         // RULE
-        var ruleSRCAddr = ipaddr.parse(rule.sourceAddress.split("/")[0]).octets;
-        var ruleSRCAddrCIDR = ipaddr.parseCIDR(rule.sourceAddress)[1];
-        var ruleDestAddr = ipaddr.parse(rule.destinationAddress.split("/")[0]).octets;
-        var ruleDestAddrCIDR = ipaddr.parseCIDR(rule.destinationAddress)[1];
-
-        console.log("SRC PACKET addr = " + packetSRCAddr);
-        console.log("SRC PACKET addrCIDR = " + packetSRCAddrCIDR);
-        console.log("DEST PACKET addr = " + packetDestAddr);
-        console.log("DEST PACKET addrCIDR = " + packetDestAddrCIDR);
+        var ruleSRCAddr = ipaddr.parse(rule.sourceAddress.split("/")[0]);
+        var ruleSRCAddrCIDR = ipaddr.parseCIDR(rule.sourceAddress);
+        var ruleDestAddr = ipaddr.parse(rule.destinationAddress.split("/")[0]);
+        var ruleDestAddrCIDR = ipaddr.parseCIDR(rule.destinationAddress);
 
         console.log("SRC RULE addr = " + ruleSRCAddr);
         console.log("SRC RULE addrCIDR = " + ruleSRCAddrCIDR);
         console.log("DEST RULE addr = " + ruleDestAddr);
         console.log("DEST RULE addrCIDR = " + ruleDestAddrCIDR);
 
-        if (packetDestAddrCIDR == 8){
+        console.log("SRC PACKET addr = " + packetSRCAddr);
+        console.log("DEST PACKET addr = " + packetDestAddr);
 
+        if (!packetSRCAddr.match(ruleSRCAddrCIDR)) {
+          return false;
         }
-        else if (packetDestAddrCIDR == 16){
-
-        }
-        else if (packetDestAddrCIDR == 24){
-
+        if (!packetDestAddr.match(ruleDestAddrCIDR)) {
+          return false;
         }
         if (rule.user != "any" && rule.user != packet.user) {
           return false;
