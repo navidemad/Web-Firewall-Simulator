@@ -160,7 +160,7 @@
         return $scope.packets.length;
       };
 
-      var passThroughFirewallRule = function (packet, rule) {
+      var passThroughFirewallRule = function (packet, rule, reason) {
         // PACKET
         var packetSRCAddr = ipaddr.parse(packet.sourceAddress);
         var packetDestAddr = ipaddr.parse(packet.destinationAddress);
@@ -180,6 +180,7 @@
         console.log("DEST PACKET addr = " + packetDestAddr);
 
         if (!packetSRCAddr.match(ruleSRCAddrCIDR)) {
+          reason = "Source adress not match source rule adress";
           return false;
         }
         if (!packetDestAddr.match(ruleDestAddrCIDR)) {
@@ -195,20 +196,22 @@
 
         for (var i = $scope.packets.length - 1; i >= 0; i--) {
           var packet = $scope.packets[i];
-          packet.failRules = [];
+          packet.reasons = [];
         }
         yield* [false];
 
         for (var i = 0; i < $scope.packets.length; i++) {
           var packet = $scope.packets[i];
 
-          packet.failRules = [];
+          packet.reasons = [];
 
            for (var j = 0; j < $scope.rules.length; j++) {
             var rule = $scope.rules[j];
 
-            if (!passThroughFirewallRule(packet, rule)) {
-              packet.failRules.push(rule);
+            var newReason = '';
+
+            if (!passThroughFirewallRule(packet, rule, newReason)) {
+              packet.reasons.push(newReason);
             }
             $scope.$apply();
 
