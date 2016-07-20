@@ -116,7 +116,7 @@
         return $scope.packets.length;
       };
 
-      var passThroughFirewallRule = function (packet, rule) {
+      var passThroughFirewallRule = function (packet, rule, reason) {
         // PACKET
         var packetSRCAddr = ipaddr.parse(packet.sourceAddress);
         var packetDestAddr = ipaddr.parse(packet.destinationAddress);
@@ -136,12 +136,15 @@
         console.log("DEST PACKET addr = " + packetDestAddr);
 
         if (!packetSRCAddr.match(ruleSRCAddrCIDR)) {
+          reason = "balbla";
           return false;
         }
         if (!packetDestAddr.match(ruleDestAddrCIDR)) {
+          reason = "balblabloublabla";
           return false;
         }
         if (rule.user != "any" && rule.user != packet.user) {
+          reason = "balblablou";
           return false;
         }
         // TODO: try every test
