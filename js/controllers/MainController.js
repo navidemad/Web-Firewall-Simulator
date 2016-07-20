@@ -1,91 +1,59 @@
-
 (function () {
 
-  'use strict';
+  angular.module('myApp').controller('MainController', MainController);
 
-  $(function(){
-
-    // onLoad dom doc
-
-  });
-
-  // Including ui.bootstrap to handle UI
-  var app = angular.module('myApp', ['ui.bootstrap']);
-
-  /*
-  ** RuleController
-  ** Popup saving rule
-  */
-  app.factory('ArrayService', function() {
-    return {
-    	deleteElement: function(array, element) {
-    		var index = array.indexOf(element);
-    		if (index == -1) {
-    			return false;
-    		}
-    		array.splice(index, 1);
-    	},
-    	moveElementUp: function(array, element) {
-    		var index = array.indexOf(element);
-
-    		// Item non-existent?
-    		if (index == -1) {
-    			return false;
-    		}
-
-    		// If there is a previous element in sections
-    		if (array[index - 1]) {
-    			// Swap elements
-    			array.splice(index - 1, 2, array[index], array[index - 1]);
-    		} else {
-    			// Do nothing
-    			return 0;
-    		}
-    	},
-    	moveElementDown: function(array, element) {
-    		var index = array.indexOf(element);
-
-    		// Item non-existent?
-    		if (index == -1) {
-    			return false;
-    		}
-
-    		// If there is a next element in sections
-    		if (array[index + 1]) {
-    			// Swap elements
-    			array.splice(index, 2, array[index + 1], array[index]);
-    		} else {
-    			// Do nothing
-    			return 0;
-    		}
-    	}
-
+  var rule_id = 0;
+  angular.module('myApp').controller('RuleController', function ($scope, $uibModalInstance, ruleSelected) {
+    if (ruleSelected !== void(0)) {
+      $scope.ruleSelected = ruleSelected;
     }
+    else {
+      $scope.ruleSelected = {
+        rule_id: -1,
+        ruleName: '',
+        sourceZone: '',
+        sourceAddress: '',
+        user: '',
+        destinationZone: '',
+        destinationAddress: '',
+        destinationPort: '',
+        application: '',
+        action: ''
+      };
+    }
+    $scope.save = function () {
+      if ($scope.ruleSelected.rule_id === -1) {
+        $scope.ruleSelected.rule_id = ++rule_id;
+      }
+      $uibModalInstance.close($scope.ruleSelected);
+    };
+    $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); };
   });
 
-  /*
-  ** MainController
-  ** Listing rules and actions to add/edit/delete
-  */
-  app.controller('MainController', function($scope, $uibModal, ArrayService, $log) {
+  angular.module('myApp').controller('PacketController', function ($scope, $uibModalInstance, packetSelected) {
+    if (packetSelected !== void(0)) {
+      $scope.packetSelected = packetSelected;
+    }
+    else {
+      $scope.packetSelected = {
+        packetName: '',
+        sourceAddress: '',
+        user: '',
+        destinationAddress: '',
+        destinationPort: '',
+        application: '',
+      };
+    }
+    $scope.save   = function () { $uibModalInstance.close($scope.packetSelected); };
+    $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); };
+  });
 
-    /*
-    ** Tab: Rules
-    */
+  MainController.$inject = ['$scope', '$controller', '$uibModal', 'ArrayService', 'DbService'];
+  function MainController($scope, $controller, $uibModal, ArrayService, DbService) {
 
-      /*
-      ** Rules data
-      */
-      $scope.rules = (localStorage.getItem('rules') !== null) ? JSON.parse(localStorage.getItem('rules')) : [];
-      localStorage.setItem('rules', JSON.stringify($scope.rules));
+      $scope.rules = DbService.Rule.all();
+      $scope.packets = DbService.Packet.all();
 
-      /*
-      ** Packet data
-      */
-      $scope.packets = (localStorage.getItem('packets') !== null) ? JSON.parse(localStorage.getItem('packets')) : [];
-      localStorage.setItem('packets', JSON.stringify($scope.packets));
-
-      // Counters
       $scope.nbRulesTested = 0;
       $scope.nbRulesFailed = 0;
       $scope.nbRulesSucceed = 0;
@@ -93,10 +61,7 @@
       $scope.nbRulesTotal = function () {
         return $scope.rules.length;
       };
-
-      // new/edit/delete buttons
       $scope.openPacketEditor = function (selectedPacket) {
-
         $uibModal.open({
           animation: true,
           templateUrl: '/modalPacketEditorContent.html',
@@ -112,8 +77,6 @@
           localStorage.setItem('packets', JSON.stringify($scope.packets));
         });
       };
-
-      // new/edit/delete buttons
       $scope.openRuleEditor = function (selectedRule) {
         $uibModal.open({
           animation: true,
@@ -126,13 +89,13 @@
             }
           }
         }).result.then(function (rule) {
-          $scope.rules.push(rule);
-          localStorage.setItem('rules', JSON.stringify($scope.rules));
+          DbService.Rule.update_or_create_by(rule);
+          $scope.rules = DbService.Rule.all();
         });
       };
       $scope.deleteRule = function(selectedRule) {
-        ArrayService.deleteElement($scope.rules, selectedRule);
-        localStorage.setItem('rules', JSON.stringify($scope.rules));
+        DbService.Rule.delete(selectedRule);
+        $scope.rules = DbService.Rule.all();
       };
       $scope.moveElementUp = function(selectedRule) {
         ArrayService.moveElementUp($scope.rules, selectedRule);
@@ -147,21 +110,13 @@
         localStorage.setItem('packets', JSON.stringify($scope.packets));
       };
 
-    /*
-    ** Tab: Tester
-    */
-
-      /*
-      ** Packets data
-      */
       $scope.packets = (localStorage.getItem('packets') !== null) ? JSON.parse(localStorage.getItem('packets')) : [];
       localStorage.setItem('packets', JSON.stringify($scope.packets));
-
       $scope.nbPacketsTotal = function () {
         return $scope.packets.length;
       };
 
-      var passThroughFirewallRule = function (packet, rule, reason) {
+      var passThroughFirewallRule = function (packet, rule) {
         // PACKET
         var packetSRCAddr = ipaddr.parse(packet.sourceAddress);
         var packetDestAddr = ipaddr.parse(packet.destinationAddress);
@@ -181,7 +136,6 @@
         console.log("DEST PACKET addr = " + packetDestAddr);
 
         if (!packetSRCAddr.match(ruleSRCAddrCIDR)) {
-          reason = "Source adress not match source rule adress";
           return false;
         }
         if (!packetDestAddr.match(ruleDestAddrCIDR)) {
@@ -197,22 +151,20 @@
 
         for (var i = $scope.packets.length - 1; i >= 0; i--) {
           var packet = $scope.packets[i];
-          packet.reasons = [];
+          packet.failRules = [];
         }
         yield* [false];
 
         for (var i = 0; i < $scope.packets.length; i++) {
           var packet = $scope.packets[i];
 
-          packet.reasons = [];
+          packet.failRules = [];
 
            for (var j = 0; j < $scope.rules.length; j++) {
             var rule = $scope.rules[j];
 
-            var newReason = '';
-
-            if (!passThroughFirewallRule(packet, rule, newReason)) {
-              packet.reasons.push(newReason);
+            if (!passThroughFirewallRule(packet, rule)) {
+              packet.failRules.push(rule);
             }
             $scope.$apply();
 
@@ -250,64 +202,6 @@
         }
       };
 
-    /*
-    ** Tester
-    */
-
-
-  });
-
-  /*
-  ** RuleController
-  ** Popup saving rule
-  */
-  app.controller('RuleController', function ($scope, $uibModalInstance, $log, ruleSelected) {
-    // Edit mode
-    if (ruleSelected !== void(0)) {
-      $scope.ruleSelected = ruleSelected;
-    }
-    // New mode
-    else {
-      $scope.ruleSelected = {
-        ruleName: '',
-        sourceZone: '',
-        sourceAddress: '',
-        user: '',
-        destinationZone: '',
-        destinationAddress: '',
-        destinationPort: '',
-        application: '',
-        action: ''
-      };
-    }
-    $scope.save   = function () { $uibModalInstance.close($scope.ruleSelected); };
-    $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); };
-  });
-
-  /*
-  ** PacketController
-  ** Popup saving rule
-  */
-  app.controller('PacketController', function ($scope, $uibModalInstance, $log, packetSelected) {
-    // Edit mode
-    if (packetSelected !== void(0)) {
-      $scope.packetSelected = packetSelected;
-    }
-    // New mode
-    else {
-      $scope.packetSelected = {
-        sourceZone: '',
-        sourceAddress: '',
-        user: '',
-        destinationZone: '',
-        destinationAddress: '',
-        destinationPort: '',
-        application: '',
-        action: ''
-      };
-    }
-    $scope.save   = function () { $uibModalInstance.close($scope.packetSelected); };
-    $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); };
-  });
+  }
 
 }());
