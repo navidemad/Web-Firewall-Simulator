@@ -151,20 +151,21 @@
 
         for (var i = $scope.packets.length - 1; i >= 0; i--) {
           var packet = $scope.packets[i];
-          packet.failRules = [];
+          packet.reasons = [];
         }
         yield* [false];
 
         for (var i = 0; i < $scope.packets.length; i++) {
           var packet = $scope.packets[i];
 
-          packet.failRules = [];
+          packet.reasons = [];
 
            for (var j = 0; j < $scope.rules.length; j++) {
             var rule = $scope.rules[j];
+            var newReason = '';
 
-            if (!passThroughFirewallRule(packet, rule)) {
-              packet.failRules.push(rule);
+            if (!passThroughFirewallRule(packet, rule, newReason)) {
+              packet.reasons.push(newReason);
             }
             $scope.$apply();
 

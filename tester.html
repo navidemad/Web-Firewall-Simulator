@@ -27,10 +27,10 @@
           <td>{{ packet.application }}</td>
           <!--<td><span class="label label-{{rule.state_tag}}">{{packet.state_text}}</span></td>-->
           <td>
-            <table class="table table-striped table-bordered" ng-show="packet.failRules" cellspacing="0" width="100%">
-              <tr ng-repeat="rule in packet.failRules track by $index" >
+            <table class="table table-striped table-bordered" ng-show="packet.reasons" cellspacing="0" width="100%">
+              <tr ng-repeat="reason in packet.reasons track by $index" >
                   <td>{{ $index + 1 }}</td>
-                  <td>FailedRule = {{ rule }}</td>
+                  <td>FailedRule = {{ reason }}</td>
               </tr>
             </table>
           </td>
