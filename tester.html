@@ -30,7 +30,7 @@
             <table class="table table-striped table-bordered" ng-show="packet.reasons" cellspacing="0" width="100%">
               <tr ng-repeat="reason in packet.reasons track by $index" >
                   <td>{{ $index + 1 }}</td>
-                  <td>FailedRule = {{ reason }}</td>
+                  <td>FailedRule = {{ reason.reason }}</td>
               </tr>
             </table>
           </td>

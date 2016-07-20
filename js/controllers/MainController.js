@@ -136,15 +136,15 @@
         console.log("DEST PACKET addr = " + packetDestAddr);
 
         if (!packetSRCAddr.match(ruleSRCAddrCIDR)) {
-          reason = "balbla";
+          reason.reason = "balbla";
           return false;
         }
         if (!packetDestAddr.match(ruleDestAddrCIDR)) {
-          reason = "balblabloublabla";
+          reason.reason = "balblabloublabla";
           return false;
         }
         if (rule.user != "any" && rule.user != packet.user) {
-          reason = "balblablou";
+          reason.reason = "balblablou";
           return false;
         }
         // TODO: try every test
@@ -165,13 +165,15 @@
 
            for (var j = 0; j < $scope.rules.length; j++) {
             var rule = $scope.rules[j];
-            var newReason = '';
+            var newReason = {reason:''};
 
             if (!passThroughFirewallRule(packet, rule, newReason)) {
+              console.log(newReason);
               packet.reasons.push(newReason);
             }
             $scope.$apply();
 
+              console.log(packet.reasons);
             yield* [false];
 
           }
