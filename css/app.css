@@ -4,8 +4,14 @@ body {
   font-weight: 300;
   line-height: 1.45;
   color: #101010;
-  background-image: url('../img/background.jpg');
-  background-size: cover;
+  background-color: #205880;
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    width:100%;
+    padding:0;
 }
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
@@ -13,19 +19,17 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 #app {
-  margin-top: 40px;
-  margin-bottom: 40px;
+  height: 100%;
+  padding: 15px;
+  display:flex;
 }
 
-#app .container {
+#app > #container-fluid {
   border-radius: 7px;
   background: #f0f0f0;
   box-shadow: 0 3px 4px rgba(0,0,0,0.2);
   overflow: hidden;
-}
-
-#app > .container-fluid {
-  padding: 0;
+  width: 100%;
 }
 
 #header {
@@ -34,26 +38,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   padding: 5px 8px;
   font-size: 11px;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
-  margin: 0 -15px;
 }
 
-#app-content {
-  margin: 15px;
-}
-
-.app-content {
-  padding: 15px 0;
-}
-
-.banner .logo {
-  padding: 15px;
-  background: white;
-  border: 1px solid #e2e2e2;
-}
-
-.banner .logo img {
-  height: 30px;
-  width: auto;
+#content {
+  padding: 10px;
 }
 
 .tab-content {
@@ -64,21 +52,11 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 .tab-content .table {
   margin: 0;
-  table-layout: fixed;
-  width: auto;
-}
-
-@media screen and (max-width: 2000px) {
-	.tab-content .table {
-		overflow-x: scroll;
-		display: block;
-	}
 }
 
 .tab-content .table td,
 .tab-content .table th {
-  padding: 7px 12px;
-  font-size: 11px;
+  font-size: 10px;
   vertical-align: middle;
 }
 

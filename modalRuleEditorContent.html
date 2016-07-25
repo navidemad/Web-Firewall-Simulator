@@ -5,65 +5,62 @@
   <form class="form-horizontal">
 
     <div class="form-group">
-      <label for="inputRuleName" class="control-label col-xs-2">Rule Name</label>
+      <label class="control-label col-xs-2">Rule Name</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputRuleName" ng-model="ruleSelected.ruleName" required>
+        <input type="text" class="form-control" ng-model="ruleSelected.name" required>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="inputProperty1" class="control-label col-xs-2">Source Zone</label>
+      <label class="control-label col-xs-2">User</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty1" placeholder="Zone Name" ng-model="ruleSelected.sourceZone" required>
+        <input type="text" class="form-control" placeholder="User name" ng-model="ruleSelected.user" required>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="inputProperty2" class="control-label col-xs-2">Source Address</label>
+      <label class="control-label col-xs-2">Application</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="0.0.0.0/0" ng-model="ruleSelected.sourceAddress" required>
+        <input type="text" class="form-control" placeholder="SSH" ng-model="ruleSelected.application" required>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="inputProperty2" class="control-label col-xs-2">User</label>
-      <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="User name" ng-model="ruleSelected.user" required>
+      <label class="control-label col-sm-2">Source</label>
+      <div class="col-sm-2">
+        <select
+          class="form-control"
+          ng-options="option.name for option in data.availableZones track by option.id"
+          ng-model="ruleSelected.sourceZone"></select>
+      </div>
+      <div class="col-xs-8">
+        <input type="text" class="form-control" placeholder="0.0.0.0/0" ng-model="ruleSelected.sourceAddress" required>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="inputProperty2" class="control-label col-xs-2">Destination Zone</label>
-      <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="User name" ng-model="ruleSelected.destinationZone" required>
+      <label class="control-label col-sm-2">Destination</label>
+      <div class="col-sm-2">
+        <select
+          class="form-control"
+          ng-options="option.name for option in data.availableZones track by option.id"
+          ng-model="ruleSelected.destinationZone"></select>
+      </div>
+      <div class="col-xs-6">
+        <input type="text" class="form-control" placeholder="0.0.0.0/0" ng-model="ruleSelected.destinationAddress" required>
+      </div>
+      <div class="col-xs-2">
+        <input type="number" class="form-control" placeholder="22" min="1" max="65535" ng-model="ruleSelected.destinationPort" required>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="inputProperty2" class="control-label col-xs-2">Destination Address</label>
+      <label class="control-label col-xs-2">Action</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="0.0.0.0/0" ng-model="ruleSelected.destinationAddress" required>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="inputProperty2" class="control-label col-xs-2">Destination Port</label>
-      <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="22" ng-model="ruleSelected.destinationPort" required>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="inputProperty2" class="control-label col-xs-2">Application</label>
-      <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="SSH" ng-model="ruleSelected.application" required>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="inputProperty2" class="control-label col-xs-2">Action</label>
-      <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="Allow or Deny" ng-model="ruleSelected.action" required>
+        <select
+          class="form-control"
+          ng-options="option.name for option in data.availableActions track by option.id"
+          ng-model="ruleSelected.action"></select>
       </div>
     </div>
 

@@ -1,3 +1,3 @@
 (function() {
-  angular.module('myApp', ['ui.bootstrap']);
+  angular.module('myApp', ['ui.bootstrap', 'wt.responsive']);
 })();

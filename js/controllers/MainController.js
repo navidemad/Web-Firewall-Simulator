@@ -4,21 +4,31 @@
 
   var rule_id = 0;
   angular.module('myApp').controller('RuleController', function ($scope, $uibModalInstance, ruleSelected) {
+    $scope.data = {
+      availableZones: [
+        {id: 'inside', name: 'Inside'},
+        {id: 'outside', name: 'Outside'}
+      ],
+      availableActions: [
+        {id: 'allow', name: 'Allow'},
+        {id: 'deny', name: 'Deny'}
+      ],
+    };
     if (ruleSelected !== void(0)) {
       $scope.ruleSelected = ruleSelected;
     }
     else {
       $scope.ruleSelected = {
         rule_id: -1,
-        ruleName: '',
-        sourceZone: '',
+        name: '',
+        sourceZone: {id: 'inside', name: 'Inside'},
         sourceAddress: '',
         user: '',
-        destinationZone: '',
+        destinationZone: {id: 'outside', name: 'Outside'},
         destinationAddress: '',
         destinationPort: '',
         application: '',
-        action: ''
+        action: {id: 'allow', name: 'Allow'}
       };
     }
     $scope.save = function () {
@@ -64,7 +74,7 @@
       $scope.openPacketEditor = function (selectedPacket) {
         $uibModal.open({
           animation: true,
-          templateUrl: '/modalPacketEditorContent.html',
+          templateUrl: '/modalPacketEditorContent.html?nd=' + Date.now(),
           controller: 'PacketController',
           size: 'lg',
           resolve: {
@@ -80,7 +90,7 @@
       $scope.openRuleEditor = function (selectedRule) {
         $uibModal.open({
           animation: true,
-          templateUrl: '/modalRuleEditorContent.html',
+          templateUrl: '/modalRuleEditorContent.html?nd=' + Date.now(),
           controller: 'RuleController',
           size: 'lg',
           resolve: {
