@@ -35,14 +35,11 @@
       <div id="content" class="row">
         <div class="col-xs-12">
           <uib-tabset>
-              <uib-tab index="0" heading="Rules">
+              <uib-tab index="0" heading="Rules ({{nbRulesTotal()}})">
                 <div ng-include src="'rules.html'"></div>
               </uib-tab>
-              <uib-tab heading="Tester">
+              <uib-tab heading="Packets ({{nbPacketsTotal()}})">
                 <div ng-include src="'tester.html'"></div>
-              </uib-tab>
-              <uib-tab heading="Bonus">
-                <div ng-include src="'bonus.html'"></div>
               </uib-tab>
             </uib-tabset>
           </div>

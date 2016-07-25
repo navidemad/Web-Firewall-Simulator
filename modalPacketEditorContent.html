@@ -5,37 +5,33 @@
   <form class="form-horizontal">
 
     <div class="form-group">
-      <label for="inputProperty2" class="control-label col-xs-2">Source Address</label>
+      <label class="control-label col-xs-2">User</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="0.0.0.0" ng-model="packetSelected.sourceAddress" required>
+        <input type="text" class="form-control" placeholder="User name" ng-model="packetSelected.user" required>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="inputProperty2" class="control-label col-xs-2">User</label>
+      <label class="control-label col-xs-2">Application</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="User name" ng-model="packetSelected.user" required>
+        <input type="text" class="form-control" placeholder="SSH" ng-model="packetSelected.application" required>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="inputProperty2" class="control-label col-xs-2">Destination Address</label>
+      <label class="control-label col-xs-2">Source</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="0.0.0.0" ng-model="packetSelected.destinationAddress" required>
+        <input type="text" class="form-control" placeholder="0.0.0.0" ng-model="packetSelected.sourceAddress" required>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="inputProperty2" class="control-label col-xs-2">Destination Port</label>
-      <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="22" ng-model="packetSelected.destinationPort" required>
+      <label class="control-label col-sm-2">Destination</label>
+      <div class="col-xs-8">
+        <input type="text" class="form-control" placeholder="0.0.0.0" ng-model="packetSelected.destinationAddress" required>
       </div>
-    </div>
-
-    <div class="form-group">
-      <label for="inputProperty2" class="control-label col-xs-2">Application</label>
-      <div class="col-xs-10">
-        <input type="text" class="form-control" id="inputProperty2" placeholder="SSH" ng-model="packetSelected.application" required>
+      <div class="col-xs-2">
+        <input type="number" class="form-control" placeholder="22" min="1" max="65535" ng-model="packetSelected.destinationPort" required>
       </div>
     </div>
 

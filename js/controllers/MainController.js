@@ -71,6 +71,9 @@
       $scope.nbRulesTotal = function () {
         return $scope.rules.length;
       };
+      $scope.nbPacketsTotal = function () {
+        return $scope.packets.length;
+      };
       $scope.openPacketEditor = function (selectedPacket) {
         $uibModal.open({
           animation: true,
@@ -215,7 +218,6 @@
       $scope.runSimulations = function () {
         $scope.nbRulesTested = 0;
         if (tm == null) {
-          console.log("runSimulations");
           simulationLoop();
         }
       };
