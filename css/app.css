@@ -44,6 +44,11 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   padding: 10px;
 }
 
+.bonus img {
+  width: 30%;
+  height: auto;
+}
+
 .tab-content {
   border: 1px solid #d4d4d4;
   padding: 15px;

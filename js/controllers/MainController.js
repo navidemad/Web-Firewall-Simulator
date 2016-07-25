@@ -137,6 +137,8 @@
         var ruleDestAddr = ipaddr.parse(rule.destinationAddress.split("/")[0]);
         var ruleDestAddrCIDR = ipaddr.parseCIDR(rule.destinationAddress);
 
+        reason.rule = rule;
+
         console.log("SRC RULE addr = " + ruleSRCAddr);
         console.log("SRC RULE addrCIDR = " + ruleSRCAddrCIDR);
         console.log("DEST RULE addr = " + ruleDestAddr);
@@ -146,15 +148,15 @@
         console.log("DEST PACKET addr = " + packetDestAddr);
 
         if (!packetSRCAddr.match(ruleSRCAddrCIDR)) {
-          reason.reason = "balbla";
+          reason.reason = "Source adress not match source rule adress";
           return false;
         }
         if (!packetDestAddr.match(ruleDestAddrCIDR)) {
-          reason.reason = "balblabloublabla";
+          reason.reason = "Destination adress not match Destination rule adress";
           return false;
         }
         if (rule.user != "any" && rule.user != packet.user) {
-          reason.reason = "balblablou";
+          reason.reason = "User does not match";
           return false;
         }
         // TODO: try every test
