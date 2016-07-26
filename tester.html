@@ -3,46 +3,45 @@
     <legend>Firewall simulated packets</legend>
     <div class="btn-list">
       <button type="button" class="btn btn-xs btn-primary" ng-click="openPacketEditor()"><i class="fa fa-plus"></i> NEW</button>
-      <button type="button" class="btn btn-xs btn-success" ng-click="runSimulations()"><i class="fa fa-play"></i> RUN TESTS</button>
+      <button type="button" class="btn btn-xs btn-success" ng-click="runSimulations()" ng-disabled="!rules || !packets"><i class="fa fa-play"></i> RUN TESTS</button>
     </div>
-    <uib-progressbar style="margin-top: 10px;" max="'{{nbRulesTotal()}}'" value="value" animate="true">
-      <span style="color:white; white-space:nowrap;">{{nbRulesTested}} / {{nbRulesTotal()}}</span>
-    </uib-progressbar>
-    <table class="table table-striped table-bordered" cellspacing="0" width="100%" wt-responsive-table>
+    <div class="panel panel-info" ng-show="nbPacketsMatched > 0 || nbPacketsNotMatched > 0">
+      <div class="panel-body">
+        <span class="text-danger">Matched: <strong>{{nbPacketsMatched}}</strong></span><br>
+        <span class="text-success">Not Matched: <strong>{{nbPacketsNotMatched}}</strong></span><br>
+      </div>
+    </div>
+    <table class="table table-striped table-bordered table-hover" cellspacing="0" width="100%" wt-responsive-table>
       <thead>
         <tr>
           <th>N°</th>
-          <th>Source<br>address</th>
           <th>User</th>
+          <th>Application</th>
+          <th>Source<br>zone</th>
+          <th>Source<br>address</th>
+          <th>Destination<br>zone</th>
           <th>Destination<br>address</th>
           <th>Destination<br>port</th>
-          <th>Application</th>
-          <th>Result</th>
+          <th>Match Log</th>
           <th>&nbsp;</th>
         </tr>
       </thead>
       <tbody>
         <tr ng-repeat="packet in packets track by $index" >
           <td>N°{{ $index + 1 }}</td>
-          <td>{{ packet.sourceAddress }}</td>
           <td>{{ packet.user }}</td>
+          <td>{{ packet.application }}</td>
+          <td>{{ packet.sourceZone.name }}</td>
+          <td>{{ packet.sourceAddress }}</td>
+          <td>{{ packet.destinationZone.name }}</td>
           <td>{{ packet.destinationAddress }}</td>
           <td>{{ packet.destinationPort }}</td>
-          <td>{{ packet.application }}</td>
-          <!--<td><span class="label label-{{rule.state_tag}}">{{packet.state_text}}</span></td>-->
           <td>
-            <table class="table table-striped table-bordered" ng-show="packet.reasons" cellspacing="0" width="100%">
-              <tr ng-repeat="reason in packet.reasons track by $index" >
-                <td>
-                  <div class="alert alert-warning" role="alert">
-                    <strong>Rule N°{{ $index + 1 }} ({{ reason.rule.name }}) matched</strong><br>
-                    {{ reason.reason }}
-                  </div>
-                </td>
-              </tr>
-            </table>
+            <span class="label label-warning log_matched" ng-show="packet.log_matched">{{ packet.log_matched }}</span>
           </td>
           <td>
+            <button type="button" class="btn btn-xs btn-info" ng-click="movePacketElementUp(packet)"><i class="fa fa-chevron-circle-up"></i></button>
+            <button type="button" class="btn btn-xs btn-info" ng-click="movePacketElementDown(packet)"><i class="fa fa-chevron-circle-down"></i></button>
             <button type="button" class="btn btn-xs btn-warning" ng-click="openPacketEditor(packet)"><i class="fa fa-cog"></i> Edit</button>
             <button type="button" class="btn btn-xs btn-danger" ng-click="deletePacket(packet)"><i class="fa fa-trash"></i> Remove</button>
           </td>

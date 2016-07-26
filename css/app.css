@@ -21,7 +21,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 #app {
   height: 100%;
   padding: 15px;
-  display:flex;
 }
 
 #app > #container-fluid {
@@ -60,7 +59,12 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   vertical-align: middle;
 }
 
+.tab-content .table td {
+
+}
+
 .tab-content .table th {
+  padding: 9px 8px;
   text-transform: uppercase;
 }
 
@@ -113,12 +117,13 @@ fieldset .btn-list {
   margin-left: 7px;
 }
 
-fieldset .progress {
-  margin-top: 0 !important;
-  margin-bottom: 10px;
+fieldset .list-group {
+  margin-bottom: 0;
 }
 
-
+.log_matched {
+  font-size: 100%;
+}
 
 #rules-container {
 

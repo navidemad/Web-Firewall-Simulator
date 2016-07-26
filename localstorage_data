@@ -1,0 +1,8 @@
+# Export (This will copy your localStorage to your clipboard. (You need two JSON.stringify()'s to get the quotes escaped.)
+copy(JSON.stringify(JSON.stringify(localStorage)));
+
+# Import
+var data = JSON.parse("{\"packets\":\"[{\\\"packet_id\\\":1,\\\"user\\\":\\\"bob\\\",\\\"application\\\":\\\"SSH\\\",\\\"sourceZone\\\":{\\\"id\\\":\\\"inside\\\",\\\"name\\\":\\\"Inside\\\"},\\\"sourceAddress\\\":\\\"10.10.1.2\\\",\\\"destinationZone\\\":{\\\"id\\\":\\\"outside\\\",\\\"name\\\":\\\"Outside\\\"},\\\"destinationAddress\\\":\\\"192.168.3.4\\\",\\\"destinationPort\\\":22,\\\"match\\\":{},\\\"destionationZone\\\":{\\\"id\\\":\\\"outside\\\",\\\"name\\\":\\\"Outside\\\"}}]\",\"rules\":\"[{\\\"rule_id\\\":1,\\\"name\\\":\\\"Deny SSH to Inside\\\",\\\"sourceZone\\\":{\\\"id\\\":\\\"inside\\\",\\\"name\\\":\\\"Inside\\\"},\\\"sourceAddress\\\":\\\"10.10.0.0/16\\\",\\\"user\\\":\\\"Any\\\",\\\"destinationZone\\\":{\\\"id\\\":\\\"outside\\\",\\\"name\\\":\\\"Outside\\\"},\\\"destinationAddress\\\":\\\"192.168.3.0/24\\\",\\\"destinationPort\\\":22,\\\"application\\\":\\\"SSH\\\",\\\"action\\\":{\\\"id\\\":\\\"deny\\\",\\\"name\\\":\\\"Deny\\\"}},{\\\"rule_id\\\":2,\\\"name\\\":\\\"Allow SSH to Outside\\\",\\\"sourceZone\\\":{\\\"id\\\":\\\"inside\\\",\\\"name\\\":\\\"Inside\\\"},\\\"sourceAddress\\\":\\\"10.10.0.0/16\\\",\\\"user\\\":\\\"Any\\\",\\\"destinationZone\\\":{\\\"id\\\":\\\"outside\\\",\\\"name\\\":\\\"Outside\\\"},\\\"destinationAddress\\\":\\\"192.168.3.0/24\\\",\\\"destinationPort\\\":22,\\\"application\\\":\\\"SSH\\\",\\\"action\\\":{\\\"id\\\":\\\"allow\\\",\\\"name\\\":\\\"Allow\\\"}}]\"}");
+Object.keys(data).forEach(function (k) {
+  localStorage.setItem(k, data[k]);
+});

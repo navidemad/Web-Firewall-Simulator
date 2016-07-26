@@ -2,7 +2,6 @@
 
   angular.module('myApp').controller('MainController', MainController);
 
-  var rule_id = 0;
   angular.module('myApp').controller('RuleController', function ($scope, $uibModalInstance, ruleSelected) {
     $scope.data = {
       availableZones: [
@@ -21,40 +20,60 @@
       $scope.ruleSelected = {
         rule_id: -1,
         name: '',
+        user: '',
+        application: '',
         sourceZone: {id: 'inside', name: 'Inside'},
         sourceAddress: '',
-        user: '',
         destinationZone: {id: 'outside', name: 'Outside'},
         destinationAddress: '',
-        destinationPort: '',
-        application: '',
-        action: {id: 'allow', name: 'Allow'}
+        destinationPort: 80,
+        action: {id: 'deny', name: 'Deny'}
       };
     }
     $scope.save = function () {
-      if ($scope.ruleSelected.rule_id === -1) {
-        $scope.ruleSelected.rule_id = ++rule_id;
+      $scope.addrule.submitted = true;
+      if($scope.addrule.$valid) {
+        $uibModalInstance.close($scope.ruleSelected);
+      } else {
+        console.log('Errors in form data');
+        console.log($scope.addrule.$error);
       }
-      $uibModalInstance.close($scope.ruleSelected);
     };
     $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); };
   });
 
   angular.module('myApp').controller('PacketController', function ($scope, $uibModalInstance, packetSelected) {
+    $scope.data = {
+      availableZones: [
+        {id: 'inside', name: 'Inside'},
+        {id: 'outside', name: 'Outside'}
+      ]
+    };
     if (packetSelected !== void(0)) {
       $scope.packetSelected = packetSelected;
     }
     else {
       $scope.packetSelected = {
-        packetName: '',
-        sourceAddress: '',
+        packet_id: -1,
         user: '',
-        destinationAddress: '',
-        destinationPort: '',
         application: '',
+        sourceZone: {id: 'inside', name: 'Inside'},
+        sourceAddress: '',
+        destinationZone: {id: 'outside', name: 'Outside'},
+        destinationAddress: '',
+        destinationPort: 80,
+        log_matched: ''
       };
     }
-    $scope.save   = function () { $uibModalInstance.close($scope.packetSelected); };
+    $scope.save = function () {
+      $scope.addpacket.submitted = true;
+      if($scope.addpacket.$valid) {
+        $uibModalInstance.close($scope.packetSelected);
+      } else {
+        console.log('Errors in form data');
+        console.log($scope.addpacket.$error);
+      }
+    };
     $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); };
   });
 
@@ -63,10 +82,6 @@
 
       $scope.rules = DbService.Rule.all();
       $scope.packets = DbService.Packet.all();
-
-      $scope.nbRulesTested = 0;
-      $scope.nbRulesFailed = 0;
-      $scope.nbRulesSucceed = 0;
 
       $scope.nbRulesTotal = function () {
         return $scope.rules.length;
@@ -86,9 +101,13 @@
             }
           }
         }).result.then(function (packet) {
-          $scope.packets.push(packet);
-          localStorage.setItem('packets', JSON.stringify($scope.packets));
+          DbService.Packet.update_or_create_by(packet);
+          $scope.packets = DbService.Packet.all();
         });
+      };
+      $scope.deletePacket = function(selectedPacket) {
+        DbService.Packet.delete(selectedPacket);
+        $scope.packets = DbService.Packet.all();
       };
       $scope.openRuleEditor = function (selectedRule) {
         $uibModal.open({
@@ -110,116 +129,102 @@
         DbService.Rule.delete(selectedRule);
         $scope.rules = DbService.Rule.all();
       };
-      $scope.moveElementUp = function(selectedRule) {
+      $scope.moveRuleElementUp = function(selectedRule) {
         ArrayService.moveElementUp($scope.rules, selectedRule);
         localStorage.setItem('rules', JSON.stringify($scope.rules));
       };
-      $scope.moveElementDown = function(selectedRule) {
+      $scope.moveRuleElementDown = function(selectedRule) {
         ArrayService.moveElementDown($scope.rules, selectedRule);
         localStorage.setItem('rules', JSON.stringify($scope.rules));
       };
-      $scope.deletePacket = function(selectedPacket) {
-        ArrayService.deleteElement($scope.packets, selectedPacket);
+      $scope.movePacketElementUp = function(selectedPacket) {
+        ArrayService.moveElementUp($scope.packets, selectedPacket);
+        localStorage.setItem('packets', JSON.stringify($scope.packets));
+      };
+      $scope.movePacketElementDown = function(selectedPacket) {
+        ArrayService.moveElementDown($scope.packets, selectedPacket);
         localStorage.setItem('packets', JSON.stringify($scope.packets));
       };
 
-      $scope.packets = (localStorage.getItem('packets') !== null) ? JSON.parse(localStorage.getItem('packets')) : [];
-      localStorage.setItem('packets', JSON.stringify($scope.packets));
-      $scope.nbPacketsTotal = function () {
-        return $scope.packets.length;
-      };
+      var passThroughFirewallRule = function (packet, rule) {
+        var log = null;
+        try {
 
-      var passThroughFirewallRule = function (packet, rule, reason) {
-        // PACKET
-        var packetSRCAddr = ipaddr.parse(packet.sourceAddress);
-        var packetDestAddr = ipaddr.parse(packet.destinationAddress);
+          if (rule.user.toLowerCase() != "any" && rule.user.toLowerCase() != packet.user.toLowerCase())
+            return [false, log];
 
-        // RULE
-        var ruleSRCAddr = ipaddr.parse(rule.sourceAddress.split("/")[0]);
-        var ruleSRCAddrCIDR = ipaddr.parseCIDR(rule.sourceAddress);
-        var ruleDestAddr = ipaddr.parse(rule.destinationAddress.split("/")[0]);
-        var ruleDestAddrCIDR = ipaddr.parseCIDR(rule.destinationAddress);
+          if (rule.application.toLowerCase() != "any" && rule.application.toLowerCase() != packet.application.toLowerCase())
+            return [false, log];
 
-        reason.rule = rule;
+          if (rule.sourceZone.name != packet.sourceZone.name)
+            return [false, log];
 
-        console.log("SRC RULE addr = " + ruleSRCAddr);
-        console.log("SRC RULE addrCIDR = " + ruleSRCAddrCIDR);
-        console.log("DEST RULE addr = " + ruleDestAddr);
-        console.log("DEST RULE addrCIDR = " + ruleDestAddrCIDR);
+          if (rule.destinationZone.name != packet.destinationZone.name)
+            return [false, log];
 
-        console.log("SRC PACKET addr = " + packetSRCAddr);
-        console.log("DEST PACKET addr = " + packetDestAddr);
+          if (rule.destinationPort != packet.destinationPort)
+            return [false, log];
 
-        if (!packetSRCAddr.match(ruleSRCAddrCIDR)) {
-          reason.reason = "Source adress not match source rule adress";
-          return false;
+          var packetSRCAddr = ipaddr.parse(packet.sourceAddress);
+          var ruleSRCAddrCIDR = ipaddr.parseCIDR(rule.sourceAddress);
+          if (!packetSRCAddr.match(ruleSRCAddrCIDR))
+            return [false, log];
+
+          var packetDestAddr = ipaddr.parse(packet.destinationAddress);
+          var ruleDestAddrCIDR = ipaddr.parseCIDR(rule.destinationAddress);
+          if (!packetDestAddr.match(ruleDestAddrCIDR))
+            return [false, log];
+
+          // inside -> outside, 10.10.1.2 -> 192.168.3.4, SSH, UDP 22, bob, Allow via Rule #2
+          String.prototype.format = function () {
+            var args = [].slice.call(arguments);
+            return this.replace(/(\{\d+\})/g, function (a){
+              return args[+(a.substr(1,a.length-2))||0];
+            });
+          };
+          log = "{0} -> {1}, {2} -> {3}, {4}, {5}, {6}, {7} via Rule called '{8}'".format(
+            packet.sourceZone.name,
+            packet.destinationZone.name,
+            packet.sourceAddress,
+            packet.destinationAddress,
+            packet.application,
+            packet.destinationPort,
+            packet.user,
+            rule.action.name,
+            rule.name
+          );
+        } catch (err) {
+          alert(err.message);
+          return [false, log];
         }
-        if (!packetDestAddr.match(ruleDestAddrCIDR)) {
-          reason.reason = "Destination adress not match Destination rule adress";
-          return false;
-        }
-        if (rule.user != "any" && rule.user != packet.user) {
-          reason.reason = "User does not match";
-          return false;
-        }
-        // TODO: try every test
-        return true;
+        return [true, log];
       }
-      function* generatorMethodSimulation(){
 
-        for (var i = $scope.packets.length - 1; i >= 0; i--) {
-          var packet = $scope.packets[i];
-          packet.reasons = [];
-        }
-        yield* [false];
-
-        for (var i = 0; i < $scope.packets.length; i++) {
-          var packet = $scope.packets[i];
-
-          packet.reasons = [];
-
-           for (var j = 0; j < $scope.rules.length; j++) {
-            var rule = $scope.rules[j];
-            var newReason = {reason:''};
-
-            if (!passThroughFirewallRule(packet, rule, newReason)) {
-              console.log(newReason);
-              packet.reasons.push(newReason);
-            }
-            $scope.$apply();
-
-              console.log(packet.reasons);
-            yield* [false];
-
-          }
-        }
-
-      };
-
-      var tm = null;
-      var gen = null;
-
-      function simulationLoop() {
-        tm = setTimeout(function() {
-          if (gen == null) {
-            gen = generatorMethodSimulation();
-          }
-          if (gen.next().done) {
-            clearTimeout(tm);
-            tm = null;
-            gen = null;
-          } else{
-            simulationLoop();
-          }
-        }, 500);
-      };
-
+      $scope.nbPacketsNotMatched = 0;
+      $scope.nbPacketsMatched = 0;
 
       $scope.runSimulations = function () {
-        $scope.nbRulesTested = 0;
-        if (tm == null) {
-          simulationLoop();
+        $scope.nbPacketsNotMatched = 0;
+        $scope.nbPacketsMatched = 0;
+
+        for (var i = 0, length_i = $scope.packets.length; i < length_i; i++)
+        {
+          var packet = $scope.packets[i];
+          for (var j = 0, length_j = $scope.rules.length; j < length_j; j++)
+          {
+            var rule = $scope.rules[j];
+            var ret, log;
+            [bool_matched, log_matched] = passThroughFirewallRule(packet, rule);
+            if (bool_matched) {
+              $scope.packets[i].log_matched = log_matched;
+              $scope.nbPacketsMatched += 1;
+              break;
+            } else {
+              $scope.nbPacketsNotMatched += 1;
+            }
+          }
         }
+
       };
 
   }

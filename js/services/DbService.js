@@ -12,6 +12,13 @@
       rules = [];
     }
 
+    var packets;
+    if (localStorage.getItem('packets') !== null) {
+      packets = JSON.parse(localStorage.getItem('packets'));
+    } else {
+      packets = [];
+    }
+
     return {
       Rule: {
         all: function() {
@@ -25,6 +32,8 @@
               count++;
             }
           });
+          if (rule.rule_id == -1)
+            rule.rule_id = rules.length + 1;
           if (count == 0)
             rules.push(rule);
           localStorage.setItem('rules', JSON.stringify(rules));
@@ -36,10 +45,25 @@
       },
       Packet: {
         all: function() {
-          if (localStorage.getItem('packets') !== null) {
-            return JSON.parse(localStorage.getItem('packets'));
-          }
-          return [];
+          return packets;
+        },
+        update_or_create_by: function(packet) {
+          var count = 0;
+          angular.forEach(packets, function(value, key) {
+            if (value.packet_id === packet.packet_id) {
+              packets[key] = packet;
+              count++;
+            }
+          });
+          if (packet.packet_id == -1)
+            packet.packet_id = packets.length + 1;
+          if (count == 0)
+            packets.push(packet);
+          localStorage.setItem('packets', JSON.stringify(packets));
+        },
+        delete: function(packet) {
+          ArrayService.deleteElement(packets, packet);
+          localStorage.setItem('packets', JSON.stringify(packets));
         }
       },
     }
