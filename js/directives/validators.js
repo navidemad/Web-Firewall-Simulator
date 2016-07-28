@@ -13,7 +13,15 @@
                     return false;
                 }
                 try {
-                  ipaddr.parseCIDR(viewValue);
+                  if (viewValue.toLowerCase() != "any") {
+                    var matches = viewValue.replace(/\s/g, '').split(",");
+                    if (matches && matches.length > 0) {
+                      for (var i = 0, length = matches.length; i < length; i++)
+                        ipaddr.parseCIDR(matches[i]);
+                    } else {
+                      ipaddr.parseCIDR(viewValue);
+                    }
+                  }
                   return true;
                 } catch(err) {
                   return false;
@@ -32,7 +40,16 @@
                     return false;
                 }
                 try {
-                  ipaddr.parse(viewValue);
+                  if (viewValue.toLowerCase() != "any") {
+                    var matches = viewValue.replace(/\s/g, '').split(",");
+                    if (matches && matches.length > 0) {
+                      for (var i = 0, length = matches.length; i < length; i++)
+                        ipaddr.parse(matches[i]);
+                    } else {
+                      ipaddr.parse(viewValue);
+                    }
+                  }
+
                   return true;
                 } catch(err) {
                   return false;
@@ -51,6 +68,8 @@
                     return false;
                 }
                 try {
+                  if (viewValue == "any")
+                    return true;
                   var p = parseInt(viewValue) || 0;
                   return !!(p >= 1 && p <= 65535);
                 } catch(err) {

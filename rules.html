@@ -4,34 +4,32 @@
     <div class="btn-list">
       <button type="button" class="btn btn-xs btn-primary" ng-click="openRuleEditor()"><i class="fa fa-plus"></i> NEW</button>
     </div>
-    <table class="table table-striped table-bordered table-hover" cellspacing="0" width="100%" wt-responsive-table>
+    <form class="form-inline">
+      <div class="form-group" style="margin-bottom: 10px;">
+        <label for="paloaltofileUpload" style="margin-right: 10px;">Import Palo Alto Network Configuration</label>
+        <input multiple type="file"  id="paloaltofileUpload" onchange="angular.element(this).scope().onFileUpload(this)">
+      </div>
+    </div>
+    <table class="table table-striped table-bordered" cellspacing="0" ng-show="rules.length > 0" width="100%" wt-responsive-table>
       <thead>
         <tr>
-          <th>N°</th>
           <th>Name</th>
           <th>User</th>
           <th>Application</th>
-          <th>Source<br>zone</th>
-          <th>Source<br>address</th>
-          <th>Destination<br>zone</th>
-          <th>Destination<br>address</th>
-          <th>Destination<br>port</th>
+          <th>Source</th>
+          <th>Destination</th>
           <th>Action</th>
           <th>&nbsp;</th>
         </tr>
       </thead>
       <tbody>
         <tr ng-repeat="rule in rules track by $index" >
-          <td>N°{{ $index + 1 }}</td>
-          <td>{{ rule.name }}</td>
+          <td><a href="#" ng-click="$event.preventDefault(); openRuleEditor(rule)"><strong>{{ rule.name }}</strong></a></td>
           <td>{{ rule.user }}</td>
           <td>{{ rule.application }}</td>
-          <td>{{ rule.sourceZone.name }}</td>
-          <td>{{ rule.sourceAddress }}</td>
-          <td>{{ rule.destinationZone.name }}</td>
-          <td>{{ rule.destinationAddress }}</td>
-          <td>{{ rule.destinationPort }}</td>
-          <td>{{ rule.action.name }}</td>
+          <td>Name: {{ rule.sourceZone }}<br>Addresses: {{ rule.sourceAddress }}</td>
+          <td>Name: {{ rule.destinationZone }}<br>Addresses: {{ rule.destinationAddress }}<br>Port: {{ rule.destinationPort }}</td>
+          <td><button type="button" class="btn btn-xs btn-{{ rule.action.name == 'allow' ? 'success' : 'danger' }}">{{ rule.action.name }}</button></td>
           <td>
             <button type="button" class="btn btn-xs btn-info" ng-click="moveRuleElementUp(rule)"><i class="fa fa-chevron-circle-up"></i></button>
             <button type="button" class="btn btn-xs btn-info" ng-click="moveRuleElementDown(rule)"><i class="fa fa-chevron-circle-down"></i></button>

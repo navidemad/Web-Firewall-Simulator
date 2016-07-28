@@ -27,13 +27,14 @@
         update_or_create_by: function(rule) {
           var count = 0;
           angular.forEach(rules, function(value, key) {
-            if (value.rule_id === rule.rule_id) {
+            if (value.rule_id === rule.rule_id || value.name === rule.name) {
+              rule.rule_id = value.rule_id;
               rules[key] = rule;
               count++;
             }
           });
           if (rule.rule_id == -1)
-            rule.rule_id = rules.length + 1;
+            rule.rule_id = Math.max(Math.max.apply(null, Object.keys(rules).map(f => rules[f].rule_id)) + 1, 1);
           if (count == 0)
             rules.push(rule);
           localStorage.setItem('rules', JSON.stringify(rules));
@@ -56,7 +57,7 @@
             }
           });
           if (packet.packet_id == -1)
-            packet.packet_id = packets.length + 1;
+            packet.packet_id = Math.max(Math.max.apply(null, Object.keys(packets).map(f => packets[f].packet_id)) + 1, 1);
           if (count == 0)
             packets.push(packet);
           localStorage.setItem('packets', JSON.stringify(packets));

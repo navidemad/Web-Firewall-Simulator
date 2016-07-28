@@ -4,13 +4,9 @@
 
   angular.module('myApp').controller('RuleController', function ($scope, $uibModalInstance, ruleSelected) {
     $scope.data = {
-      availableZones: [
-        {id: 'inside', name: 'Inside'},
-        {id: 'outside', name: 'Outside'}
-      ],
       availableActions: [
-        {id: 'allow', name: 'Allow'},
-        {id: 'deny', name: 'Deny'}
+        {id: 'allow', name: 'allow'},
+        {id: 'deny', name: 'deny'}
       ],
     };
     if (ruleSelected !== void(0)) {
@@ -22,12 +18,12 @@
         name: '',
         user: '',
         application: '',
-        sourceZone: {id: 'inside', name: 'Inside'},
+        sourceZone: '',
         sourceAddress: '',
-        destinationZone: {id: 'outside', name: 'Outside'},
+        destinationZone: '',
         destinationAddress: '',
-        destinationPort: 80,
-        action: {id: 'deny', name: 'Deny'}
+        destinationPort: null,
+        action: null
       };
     }
     $scope.save = function () {
@@ -43,12 +39,6 @@
   });
 
   angular.module('myApp').controller('PacketController', function ($scope, $uibModalInstance, packetSelected) {
-    $scope.data = {
-      availableZones: [
-        {id: 'inside', name: 'Inside'},
-        {id: 'outside', name: 'Outside'}
-      ]
-    };
     if (packetSelected !== void(0)) {
       $scope.packetSelected = packetSelected;
     }
@@ -57,11 +47,11 @@
         packet_id: -1,
         user: '',
         application: '',
-        sourceZone: {id: 'inside', name: 'Inside'},
+        sourceZone: '',
         sourceAddress: '',
-        destinationZone: {id: 'outside', name: 'Outside'},
+        destinationZone: '',
         destinationAddress: '',
-        destinationPort: 80,
+        destinationPort: null,
         log_matched: ''
       };
     }
@@ -77,8 +67,18 @@
     $scope.cancel = function () { $uibModalInstance.dismiss('cancel'); };
   });
 
-  MainController.$inject = ['$scope', '$controller', '$uibModal', 'ArrayService', 'DbService'];
-  function MainController($scope, $controller, $uibModal, ArrayService, DbService) {
+  MainController.$inject = ['$scope', '$controller', '$uibModal', '$q', 'ArrayService', 'DbService', 'FileInputService'];
+  function MainController($scope, $controller, $uibModal, $q, ArrayService, DbService, FileInputService) {
+
+      $scope.onFileUpload = function (element) {
+        $scope.$apply(function (scope) {
+          for (var i = 0, length = element.files.length; i < length; i++) {
+            FileInputService.readFileAsync(element.files[i]).then(function(paloAltoNetworkContent) {
+              $scope.importPAN(paloAltoNetworkContent);
+            });
+          }
+        });
+      };
 
       $scope.rules = DbService.Rule.all();
       $scope.packets = DbService.Packet.all();
@@ -109,6 +109,108 @@
         DbService.Packet.delete(selectedPacket);
         $scope.packets = DbService.Packet.all();
       };
+      $scope.importPAN = function (paloAltoNetworkContent) {
+
+        paloAltoNetworkContent = paloAltoNetworkContent.replace(/\[\s+/gi, '[');
+        paloAltoNetworkContent = paloAltoNetworkContent.replace(/\s+\]/gi, ']');
+        paloAltoNetworkContent = paloAltoNetworkContent.replace(/[ |\t]+/gi, ' ');
+        paloAltoNetworkContent = paloAltoNetworkContent.replace(/([a-zA-Z0-9-./]+) ([\[\]a-zA-Z0-9-./ ]+);?/gi, '"$1": "$2",');
+        paloAltoNetworkContent = paloAltoNetworkContent.replace(/"\[(.*)\]"/gi, '[$1]');
+        paloAltoNetworkContent = paloAltoNetworkContent.replace(/, }/gi, ' }');
+        paloAltoNetworkContent = paloAltoNetworkContent.replace(/([a-zA-Z0-9-.]+) \{/gi, '"$1": {');
+        var lines = paloAltoNetworkContent.match(/[^\r\n]+/g);
+        for (var i = 0, length = lines.length; i < length; i++) {
+         matches = lines[i].match(/\[([^\]]+)\]/)
+         if (matches && matches.length > 1) {
+           var s = "[" + matches[1].split(" ").map(function(e) {return '"' + e + '"'}).join(", ") + "]";
+           paloAltoNetworkContent = paloAltoNetworkContent.replace(`[${matches[1]}]`, s);
+         }
+        }
+        paloAltoNetworkContent = paloAltoNetworkContent.replace(/\s+/gi, ' ');
+        paloAltoNetworkContent = paloAltoNetworkContent.replace(/\}/gi, '},');
+        paloAltoNetworkContent = paloAltoNetworkContent.replace(/, \}/gi, ' }');
+        paloAltoNetworkContent = "{" + paloAltoNetworkContent + "}";
+        paloAltoNetworkContent = paloAltoNetworkContent.replace(/\},\s?\}/gi, '} }');
+
+        var obj = JSON.parse(paloAltoNetworkContent);
+
+        var pan_rules = obj['rulebase']['security']['rules'];
+        var pan_addresses = obj['address'];
+        var pan_address_groups = obj['address-group'];
+
+        var merge_array = function (array1, array2) {
+            var result_array = [];
+            var arr = array1.concat(array2);
+            var len = arr.length;
+            var assoc = {};
+
+            while(len--) {
+                var item = arr[len];
+
+                if(!assoc[item])
+                {
+                    result_array.unshift(item);
+                    assoc[item] = true;
+                }
+            }
+
+            return result_array;
+        }
+
+        var replace_addresses = function (input, addresses, address_groups) {
+          var inputs = (typeof input == 'string') ? [input] : input;
+          var tmp_addresses = [];
+          for (var _ in inputs) {
+            let address_value = inputs[_];
+            var found = false;
+            try {
+              if (!found) {
+                for (var address_name in addresses) {
+                  if (address_name === address_value) {
+                    tmp_addresses = merge_array(tmp_addresses, replace_addresses(addresses[address_name]['ip-netmask'], addresses, address_groups));
+                    found = true;
+                    break;
+                  }
+                }
+              }
+              if (!found) {
+                for (var address_group_name in address_groups) {
+                  if (address_group_name === address_value) {
+                    tmp_addresses = merge_array(tmp_addresses, replace_addresses(address_groups[inputs[_]]['static'], addresses, address_groups));
+                    found = true;
+                    break;
+                  }
+                }
+              }
+              if (!found) {
+                tmp_addresses = merge_array(tmp_addresses, [address_value]);
+              }
+            }
+            catch (err) {
+              console.log('Error occured: ' + err.message);
+            }
+          }
+          return tmp_addresses;
+        }
+        for (var rule_name in pan_rules) {
+            let rule = pan_rules[rule_name];
+            var new_rule = {};
+            new_rule.rule_id = -1;
+            new_rule.name = rule_name;
+            new_rule.user = rule['source-user'];
+            new_rule.application = rule['application'];
+            new_rule.sourceAddress = replace_addresses(rule['source'], pan_addresses, pan_address_groups);
+            new_rule.sourceZone = rule['from'];
+            new_rule.destinationAddress = replace_addresses(rule['destination'], pan_addresses, pan_address_groups);
+            new_rule.destinationZone = rule['to'];
+            new_rule.destinationPort = ('port' in rule) ? rule['port'] : 'any';
+            new_rule.action = {id: rule['action'], name: rule['action']}
+            DbService.Rule.update_or_create_by(new_rule);
+        }
+        $scope.rules = DbService.Rule.all();
+
+      };
+
       $scope.openRuleEditor = function (selectedRule) {
         $uibModal.open({
           animation: true,
@@ -156,26 +258,35 @@
           if (rule.application.toLowerCase() != "any" && rule.application.toLowerCase() != packet.application.toLowerCase())
             return [false, log];
 
-          if (rule.sourceZone.name != packet.sourceZone.name)
+          if (rule.sourceZone.toLowerCase() != "any" && rule.sourceZone != packet.sourceZone)
             return [false, log];
 
-          if (rule.destinationZone.name != packet.destinationZone.name)
+          if (rule.destinationZone.toLowerCase() != "any" && rule.destinationZone != packet.destinationZone)
             return [false, log];
 
-          if (rule.destinationPort != packet.destinationPort)
+          if (rule.destinationPort.toLowerCase() != "any" && rule.destinationPort != packet.destinationPort)
             return [false, log];
 
           var packetSRCAddr = ipaddr.parse(packet.sourceAddress);
-          var ruleSRCAddrCIDR = ipaddr.parseCIDR(rule.sourceAddress);
-          if (!packetSRCAddr.match(ruleSRCAddrCIDR))
-            return [false, log];
+          for (var _ in rule.sourceAddress) {
+            let sourceAddr = rule.sourceAddress[_];
+            if (sourceAddr.toLowerCase() == "any")
+              break;
+            var ruleSRCAddrCIDR = ipaddr.parseCIDR(sourceAddr);
+            if (!packetSRCAddr.match(ruleSRCAddrCIDR))
+              return [false, log];
+          }
 
           var packetDestAddr = ipaddr.parse(packet.destinationAddress);
-          var ruleDestAddrCIDR = ipaddr.parseCIDR(rule.destinationAddress);
-          if (!packetDestAddr.match(ruleDestAddrCIDR))
-            return [false, log];
+          for (var _ in rule.destinationAddress) {
+            let destinationAddr = rule.destinationAddress[_];
+            if (destinationAddr.toLowerCase() == "any")
+              break;
+            var ruleDestAddrCIDR = ipaddr.parseCIDR(destinationAddr);
+            if (!packetDestAddr.match(ruleDestAddrCIDR))
+              return [false, log];
+          }
 
-          // inside -> outside, 10.10.1.2 -> 192.168.3.4, SSH, UDP 22, bob, Allow via Rule #2
           String.prototype.format = function () {
             var args = [].slice.call(arguments);
             return this.replace(/(\{\d+\})/g, function (a){
@@ -183,8 +294,8 @@
             });
           };
           log = "{0} -> {1}, {2} -> {3}, {4}, {5}, {6}, {7} via Rule called '{8}'".format(
-            packet.sourceZone.name,
-            packet.destinationZone.name,
+            packet.sourceZone,
+            packet.destinationZone,
             packet.sourceAddress,
             packet.destinationAddress,
             packet.application,
@@ -194,7 +305,7 @@
             rule.name
           );
         } catch (err) {
-          alert(err.message);
+          console.log(err);
           return [false, log];
         }
         return [true, log];

@@ -1,9 +1,2 @@
-# gerer les any manquants
-source any;
-destination any;
-source-user any;
-application any;
-application any;
-
 # gerer l'upload PAN
 cf. file.pan

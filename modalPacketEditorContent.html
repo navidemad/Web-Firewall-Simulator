@@ -1,5 +1,6 @@
 <div class="modal-header">
   <h3 class="modal-title">{{packetSelected.packet_id == -1 ? "Add" : "Edit"}} packet</h3>
+  <div class="modal-subtitle">You can put 'any' if you does not care about the field value.</div>
 </div>
 <div class="modal-body">
   <form class="form-horizontal" name="addpacket" novalidate>
@@ -7,7 +8,7 @@
     <div class="form-group">
       <label class="control-label col-xs-2">User</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" placeholder="User" name="User" ng-model="packetSelected.user" ng-required="true">
+        <input type="text" class="form-control" name="User" ng-model="packetSelected.user" ng-required="true">
         <span class="text-danger" data-ng-show="addpacket.submitted && addpacket.User.$invalid">User is required</span>
       </div>
     </div>
@@ -15,7 +16,7 @@
     <div class="form-group">
       <label class="control-label col-xs-2">Application</label>
       <div class="col-xs-10">
-        <input type="text" class="form-control" placeholder="SSH" name="Application" ng-model="packetSelected.application" ng-required="true">
+        <input type="text" class="form-control" name="Application" ng-model="packetSelected.application" ng-required="true">
         <span class="text-danger" data-ng-show="addpacket.submitted && addpacket.Application.$invalid">Application is required</span>
       </div>
     </div>
@@ -23,33 +24,27 @@
     <div class="form-group">
       <label class="control-label col-sm-2">Source</label>
       <div class="col-sm-2">
-        <select
-          class="form-control"
-          ng-options="option.name for option in data.availableZones track by option.id"
-          ng-model="packetSelected.sourceZone"></select>
+        <input class="form-control" placeholder="zone"  name="SourceZone" ng-model="packetSelected.sourceZone" ng-required="true">
+        <span class="text-danger" data-ng-show="addpacket.submitted && addpacket.SourceZone.$error.required">Zone is required</span>
       </div>
       <div class="col-xs-8">
-        <input type="text" class="form-control" placeholder="10.10.1.2" ipaddress name="SourceAddress" ng-model="packetSelected.sourceAddress" ng-required="true">
-        <span class="text-danger" data-ng-show="addpacket.submitted && addpacket.SourceAddress.$error.required">SourceAddress is required<br></span>
-        <span class="text-danger" data-ng-show="addpacket.submitted && addpacket.SourceAddress.$error.ipaddress">SourceAddress is not valid netmask</span>
+        <input type="text" class="form-control" placeholder="ip address" name="SourceAddress" ng-model="packetSelected.sourceAddress" ng-required="true">
+        <span class="text-danger" data-ng-show="addpacket.submitted && addpacket.SourceAddress.$error.required">Address is required<br></span>
       </div>
     </div>
 
     <div class="form-group">
       <label class="control-label col-sm-2">Destination</label>
       <div class="col-sm-2">
-        <select
-          class="form-control"
-          ng-options="option.name for option in data.availableZones track by option.id"
-          ng-model="packetSelected.destionationZone"></select>
+        <input class="form-control" placeholder="zone"  name="DestinationZone" ng-model="packetSelected.destinationZone" ng-required="true">
+        <span class="text-danger" data-ng-show="addpacket.submitted && addpacket.DestinationZone.$error.required">Zone is required</span>
       </div>
       <div class="col-xs-6">
-        <input type="text" class="form-control" placeholder="192.168.3.4" ipaddress name="DestinationAddress" ng-model="packetSelected.destinationAddress" ng-required="true">
-        <span class="text-danger" data-ng-show="addpacket.submitted && addpacket.DestinationAddress.$error.required">DestinationAddress is required<br></span>
-        <span class="text-danger" data-ng-show="addpacket.submitted && addpacket.DestinationAddress.$error.ipaddress">DestinationAddress is not valid ip address</span>
+        <input type="text" class="form-control" placeholder="ip address" name="DestinationAddress" ng-model="packetSelected.destinationAddress" ng-required="true">
+        <span class="text-danger" data-ng-show="addpacket.submitted && addpacket.DestinationAddress.$error.required">Address is required<br></span>
       </div>
       <div class="col-xs-2">
-        <input type="number" class="form-control" placeholder="22" min="1" max="65535" port name="DestinationPort" ng-model="packetSelected.destinationPort" ng-required="true">
+        <input type="text" class="form-control" placeholder="port" min="1" max="65535" port name="DestinationPort" ng-model="packetSelected.destinationPort" ng-required="true">
         <span class="text-danger" data-ng-show="addpacket.submitted && addpacket.DestinationPort.$error.required">Port required<br></span>
         <span class="text-danger" data-ng-show="addpacket.submitted && addpacket.DestinationPort.$error.port">Port not valid</span>
       </div>
