@@ -9,6 +9,10 @@
 
     /* Force table to not be like tables anymore */
     /* table.responsive,*/
+    .responsive {
+      table-layout: fixed;
+    }
+
     .responsive thead,
     .responsive tbody,
     .responsive tr,
@@ -27,9 +31,9 @@
         border: 1px solid #ccc;
     }
 
-    .responsive td:nth-child(odd), .responsive td:nth-child(even) {
+    .responsive td, .responsive td:nth-child(odd), .responsive td:nth-child(even) {
         /* Behave  like a "row" */
-        border: none;
+        border: none ;
         border-bottom: 1px solid #eee;
         position: relative;
         padding-left: 20%;
@@ -48,7 +52,7 @@
         position: absolute;
         /* Top/left values mimic padding */
         left: 6px;
-        width: 45%;
+        width: 20%;
         padding-right: 10px;
         -ms-word-wrap: break-word;
             word-wrap: break-word;

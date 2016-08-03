@@ -50,7 +50,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .tab-content .table {
-  margin: 0;
+  /*margin: 0;*/
 }
 
 .tab-content .label {
@@ -68,7 +68,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .tab-content .table th {
-  padding: 9px 8px;
+  /*padding: 9px 8px;*/
   text-transform: uppercase;
 }
 
