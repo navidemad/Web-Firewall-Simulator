@@ -258,13 +258,13 @@
           if (rule.application.toLowerCase() != "any" && rule.application.toLowerCase() != packet.application.toLowerCase())
             return [false, log];
 
-          if (rule.sourceZone.toLowerCase() != "any" && rule.sourceZone != packet.sourceZone)
+          if (rule.sourceZone.toLowerCase() != "any" && rule.sourceZone.toLowerCase() != packet.sourceZone.toLowerCase())
             return [false, log];
 
-          if (rule.destinationZone.toLowerCase() != "any" && rule.destinationZone != packet.destinationZone)
+          if (rule.destinationZone.toLowerCase() != "any" && rule.destinationZone.toLowerCase() != packet.destinationZone.toLowerCase())
             return [false, log];
 
-          if (rule.destinationPort.toLowerCase() != "any" && rule.destinationPort != packet.destinationPort)
+          if (rule.destinationPort.toLowerCase() != "any" && rule.destinationPort.toLowerCase() != packet.destinationPort.toLowerCase())
             return [false, log];
 
           var packetSRCAddr = ipaddr.parse(packet.sourceAddress);
